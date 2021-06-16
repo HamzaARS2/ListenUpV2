@@ -9,6 +9,7 @@ import androidx.room.RoomDatabase;
 import com.example.listenupv2.model.entities.Audio;
 import com.example.listenupv2.model.entities.Favorite;
 import com.example.listenupv2.model.entities.Playlist;
+import com.example.listenupv2.model.entities.relations.PlaylistAudioCrossRef;
 import com.example.listenupv2.model.roomdb.daos.AudioDao;
 import com.example.listenupv2.model.roomdb.daos.FavoriteDao;
 import com.example.listenupv2.model.roomdb.daos.PlaylistDao;
@@ -16,14 +17,15 @@ import com.example.listenupv2.model.roomdb.daos.PlaylistDao;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@Database(entities = {Audio.class, Favorite.class, Playlist.class, Enrolment.class}, version = 1)
+
+@Database(entities = {Audio.class, Favorite.class, Playlist.class, PlaylistAudioCrossRef.class}, version = 1,exportSchema = false)
 public abstract class AudioDatabase extends RoomDatabase {
     public abstract AudioDao audioDao();
     public abstract FavoriteDao favoriteDao();
     public abstract PlaylistDao playlistDao();
-    public abstract EnrolmentDao enrolmentDao();
     private static volatile AudioDatabase instance;
     private static final int NUMBER_OF_THREADS = 6;
+
     public static final ExecutorService databaseExecutor =
             Executors.newFixedThreadPool(NUMBER_OF_THREADS);
 

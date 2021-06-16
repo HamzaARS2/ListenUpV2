@@ -36,8 +36,9 @@ public interface PlaylistDao {
 
     @Transaction
     @Query("SELECT * FROM playlist_table")
-    public List<PlaylistWithAudios> getPlaylistsWithAudios();
+    List<PlaylistWithAudios> getPlaylistsWithAudios();
 
+    @Transaction
     @Query("SELECT * FROM playlist_table WHERE playlist_id = :id")
-    public PlaylistWithAudios getOnePlaylistWithAudios(int id);
+    PlaylistWithAudios getOnePlaylistWithAudios(int id);
 }
