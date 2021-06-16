@@ -1,8 +1,10 @@
-package com.example.listenupv2;
+package com.example.listenupv2.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+
+import com.example.listenupv2.R;
 
 public class MainActivity extends AppCompatActivity {
 
