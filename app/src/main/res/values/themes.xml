@@ -12,10 +12,13 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
+
+        <!-- SearchView Style -->
+        <item name="searchViewStyle">@style/SearchViewStyle</item>
     </style>
 
     <!--SearchViewStyle -->
-    <style name="SearchViewStyle" parent="Widget.AppCompat.SearchView">
+    <style name="SearchViewStyle" parent="Theme.ListenUpV2">
         <item name="searchIcon">@drawable/ic_search_24</item>
         <item name="closeIcon">@drawable/ic_close_24</item>
         <item name="searchHintIcon">@drawable/ic_search_24</item>
