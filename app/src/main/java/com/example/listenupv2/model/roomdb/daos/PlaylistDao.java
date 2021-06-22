@@ -38,7 +38,7 @@ public interface PlaylistDao {
     @Query("SELECT * FROM playlist_table")
     List<PlaylistWithAudios> getPlaylistsWithAudios();
 
-    @Transaction
-    @Query("SELECT * FROM playlist_table WHERE playlist_id = :id")
-    PlaylistWithAudios getOnePlaylistWithAudios(int id);
+//    @Transaction
+//    @Query("SELECT * FROM playlist_table WHERE playlist_id = :id")
+//    PlaylistWithAudios getOnePlaylistWithAudios(int id);
 }

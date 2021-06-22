@@ -38,6 +38,7 @@ public class FavoriteViewModel extends AndroidViewModel {
         repository.deleteAllFavoriteAudios();
     }
 
+
     public LiveData<List<Favorite>> getAllFavorites() {
         return allFavorites;
     }

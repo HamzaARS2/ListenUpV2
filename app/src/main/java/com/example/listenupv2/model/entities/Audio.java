@@ -1,10 +1,13 @@
 package com.example.listenupv2.model.entities;
 
 import androidx.annotation.NonNull;
+import androidx.core.text.util.LinkifyCompat;
+import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "audio_table")
+@Entity(tableName = "audio_table", indices = {@Index(value = {"title","uri"},unique = true)})
 public class Audio {
 
     @PrimaryKey(autoGenerate = true)
