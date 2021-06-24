@@ -33,9 +33,7 @@ public class AudioViewModel extends AndroidViewModel {
 
 
 
-    public void onPopupMenuClick(){
-        listener.onPopupMenuClick("wdasd");
-    }
+
 
     public void insert(Audio audio){
         repository.insert(audio);

@@ -4,6 +4,9 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import android.util.Log;
+import android.widget.PopupMenu;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -11,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -31,7 +35,7 @@ import java.util.List;
  * Use the {@link FavoriteFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class FavoriteFragment extends Fragment {
+public class FavoriteFragment extends Fragment implements FavoriteAdapter.OnFavoriteClicklistener {
 
 
     private RecyclerView recyclerView;
@@ -96,6 +100,7 @@ public class FavoriteFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);
+        adapter.setOnItemClickListener(this);
     }
 
     public void isExist(List<Favorite> favorites) {
@@ -113,4 +118,31 @@ public class FavoriteFragment extends Fragment {
                        viewModel.delete(favorites.get(i));
                 }
     }
+
+    @Override
+    public void onItemClick(Favorite favoriteAudio) {
+        Toast.makeText(getActivity(), favoriteAudio.getFavorite_title(), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onPopupMenuClick(Favorite favoriteAudio, int position, View view) {
+        showFavoritePopupMenu(view,favoriteAudio);
+
+    }
+
+    public void showFavoritePopupMenu(View view, Favorite favorite){
+       PopupMenu popupMenu = new PopupMenu(getActivity(),view);
+       popupMenu.inflate(R.menu.favorite_popup_menu);
+       popupMenu.show();
+       popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+           @Override
+           public boolean onMenuItemClick(MenuItem item) {
+               viewModel.delete(favorite);
+               Toast.makeText(getActivity(), "Deleted", Toast.LENGTH_SHORT).show();
+               return false;
+           }
+       });
+    }
+
+
 }

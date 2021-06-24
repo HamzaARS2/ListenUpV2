@@ -30,7 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class AudiosFragment extends Fragment implements AudioInteraction {
+public class AudiosFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private RecyclerViewAdapter adapter;
@@ -125,15 +125,9 @@ public class AudiosFragment extends Fragment implements AudioInteraction {
         });
     }
 
-    @Override
-    public void onAudioClick(Audio audio) {
 
-    }
 
-    @Override
-    public void onPopupMenuClick(String name) {
-        Toast.makeText(getContext(), name, Toast.LENGTH_SHORT).show();
-    }
+
 
 
 }

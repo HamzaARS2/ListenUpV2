@@ -1,18 +1,19 @@
 package com.example.listenupv2.ui.adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.listenupv2.R;
-import com.example.listenupv2.model.entities.Audio;
 import com.example.listenupv2.model.entities.Favorite;
 
 import java.util.ArrayList;
@@ -21,16 +22,16 @@ import java.util.List;
 public class FavoriteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private List<Favorite> favoriteList = new ArrayList<>();
-    public onItemClickListener listener;
+    public OnFavoriteClicklistener listener;
     private Context context;
 
 
-    public interface onItemClickListener {
+    public interface OnFavoriteClicklistener {
         void onItemClick(Favorite favoriteAudio);
         void onPopupMenuClick(Favorite favoriteAudio,int position,View view);
     }
 
-    public void setOnItemClickListener(onItemClickListener listener){
+    public void setOnItemClickListener(OnFavoriteClicklistener listener){
         this.listener = listener;
     }
 
@@ -72,7 +73,7 @@ public class FavoriteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         TextView title;
         ImageButton popupMenuBtn;
 
-        public Holder(@NonNull View itemView, onItemClickListener listener) {
+        public Holder(@NonNull View itemView, OnFavoriteClicklistener listener) {
             super(itemView);
             this.imageView = itemView.findViewById(R.id.audio_img_view);
             this.title = itemView.findViewById(R.id.audio_tv_title);
@@ -94,6 +95,7 @@ public class FavoriteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     if (listener != null){
                         if (getAdapterPosition() != RecyclerView.NO_POSITION){
                             listener.onPopupMenuClick(favoriteList.get(getAdapterPosition()),getAdapterPosition(),v);
+
                         }
                     }
                 }
