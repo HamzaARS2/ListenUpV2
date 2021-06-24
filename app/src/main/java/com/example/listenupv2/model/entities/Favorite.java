@@ -5,7 +5,7 @@ import androidx.room.Entity;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "favorite_table", indices = {@Index(value = {"favorite_id"},unique = true)})
+@Entity(tableName = "favorite_table", indices = {@Index(value = {"favorite_title","favorite_uri"},unique = true)})
 public class Favorite {
 
     @PrimaryKey(autoGenerate = true)

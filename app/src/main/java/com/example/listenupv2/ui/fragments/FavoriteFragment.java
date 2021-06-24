@@ -16,7 +16,9 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.example.listenupv2.R;
+import com.example.listenupv2.model.entities.Audio;
 import com.example.listenupv2.model.entities.Favorite;
+import com.example.listenupv2.model.roomdb.DataReceiver;
 import com.example.listenupv2.ui.adapters.FavoriteAdapter;
 import com.example.listenupv2.ui.adapters.RecyclerViewAdapter;
 import com.example.listenupv2.viewmodels.FavoriteViewModel;
@@ -35,7 +37,6 @@ public class FavoriteFragment extends Fragment {
     private RecyclerView recyclerView;
     private FavoriteAdapter adapter;
     private FavoriteViewModel viewModel;
-    ArrayList<Favorite> favoriteArrayList;
 
 
 
@@ -55,10 +56,12 @@ public class FavoriteFragment extends Fragment {
         super.onCreate(savedInstanceState);
         adapter = new FavoriteAdapter();
         viewModel = new ViewModelProvider(this).get(FavoriteViewModel.class);
+
 //        favoriteArrayList = new ArrayList<>();
 //        favoriteArrayList.add(new Favorite(1,"favorite1","uri1"));
 //        favoriteArrayList.add(new Favorite(2,"favorite2","uri2"));
 //        favoriteArrayList.add(new Favorite(3,"favorite3","uri3"));
+
 
         Toast.makeText(getContext(), "onCreate", Toast.LENGTH_SHORT).show();
     }
@@ -71,7 +74,9 @@ public class FavoriteFragment extends Fragment {
             @Override
             public void onChanged(List<Favorite> favorites) {
                 Toast.makeText(getContext(), "resume", Toast.LENGTH_SHORT).show();
+                isExist(favorites);
                 adapter.setFavorites(favorites);
+
             }
         });
     }
@@ -91,5 +96,21 @@ public class FavoriteFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);
+    }
+
+    public void isExist(List<Favorite> favorites) {
+        ArrayList<Audio> audios = new DataReceiver(getContext()).getAvailableAudioFiles();
+                for (int i = 0; i < favorites.size(); i++){
+                    boolean isExist = false;
+                    int j = 0;
+                    while (j < audios.size() && !isExist){
+                        if (favorites.get(i).getFavorite_uri().equals(audios.get(j).getUri())){
+                            isExist = true;
+                        }
+                        j++;
+                    }
+                    if (!isExist)
+                       viewModel.delete(favorites.get(i));
+                }
     }
 }

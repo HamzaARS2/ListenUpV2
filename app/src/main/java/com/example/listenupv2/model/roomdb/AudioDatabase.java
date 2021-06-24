@@ -20,7 +20,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 
-@Database(entities = {Audio.class, Favorite.class, Playlist.class, PlaylistAudioCrossRef.class}, version = 7,exportSchema = false)
+@Database(entities = {Audio.class, Favorite.class, Playlist.class, PlaylistAudioCrossRef.class}, version = 11,exportSchema = false)
 public abstract class AudioDatabase extends RoomDatabase {
     public abstract AudioDao audioDao();
     public abstract FavoriteDao favoriteDao();

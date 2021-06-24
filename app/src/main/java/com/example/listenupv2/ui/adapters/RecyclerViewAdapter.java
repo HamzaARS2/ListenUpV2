@@ -23,15 +23,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
    private List<Audio> audioList = new ArrayList<>();
    private List<Favorite> favoriteList = new ArrayList<>();
    public onItemClickListener listener;
-   private Context context;
 
    public interface onItemClickListener {
       void onItemClick(Audio audio);
       void onPopupMenuClick(Audio audio,int position,View view);
    }
-
-
-
 
 
 

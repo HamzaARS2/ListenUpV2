@@ -21,7 +21,7 @@ import java.util.List;
 @Dao
 public interface AudioDao {
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insert(Audio audio);
 
     @Update
