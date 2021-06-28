@@ -1,5 +1,7 @@
 package com.example.listenupv2.ui.fragments;
 
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -22,15 +24,17 @@ import com.example.listenupv2.model.entities.Audio;
 import com.example.listenupv2.model.entities.Favorite;
 import com.example.listenupv2.model.entities.Playlist;
 import com.example.listenupv2.model.roomdb.DataReceiver;
+import com.example.listenupv2.ui.AudioPlayer;
 import com.example.listenupv2.ui.adapters.RecyclerViewAdapter;
 import com.example.listenupv2.viewmodels.AudioViewModel;
 import com.example.listenupv2.viewmodels.FavoriteViewModel;
 import com.example.listenupv2.viewmodels.PlaylistViewModel;
 
+import java.io.IOException;
 import java.util.List;
 
 
-public class AudiosFragment extends Fragment {
+public class AudiosFragment extends Fragment implements RecyclerViewAdapter.OnItemClickListener {
 
     private RecyclerView recyclerView;
     private RecyclerViewAdapter adapter;
@@ -38,7 +42,6 @@ public class AudiosFragment extends Fragment {
     private FavoriteViewModel favoriteViewModel;
     private PlaylistViewModel playlistViewModel;
     private List<Audio> audios;
-    long playlist_id;
     public AudiosFragment() {
         // Required empty public constructor
     }
@@ -57,6 +60,7 @@ public class AudiosFragment extends Fragment {
         viewModel = new ViewModelProvider(this).get(AudioViewModel.class);
         favoriteViewModel = new ViewModelProvider(this).get(FavoriteViewModel.class);
         playlistViewModel = new ViewModelProvider(this).get(PlaylistViewModel.class);
+
         //audios = new DataReceiver(getContext()).getAvailableAudioFiles();
         //viewModel.deleteAllAudios();
 
@@ -93,17 +97,7 @@ public class AudiosFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);
-        adapter.setOnItemClickListener(new RecyclerViewAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(Audio audio) {
-                Toast.makeText(getContext(), audio.getUri(), Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onPopupMenuClick(Audio audio, int position, View view) {
-                showPopupMenu(view,position,audio);
-            }
-        });
+        adapter.setOnItemClickListener(this);
     }
 
     public void showPopupMenu(View view,int position,Audio audio){
@@ -132,8 +126,15 @@ public class AudiosFragment extends Fragment {
     }
 
 
+    @Override
+    public void onItemClick(Audio audio) {
+        AudioPlayer player = new AudioPlayer(getContext(),Uri.parse(audio.getUri()));
+        player.play();
+        Toast.makeText(getContext(), audio.getUri(), Toast.LENGTH_SHORT).show();
+    }
 
-
-
-
+    @Override
+    public void onPopupMenuClick(Audio audio, int position, View view) {
+        showPopupMenu(view,position,audio);
+    }
 }
