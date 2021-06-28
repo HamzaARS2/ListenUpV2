@@ -1,5 +1,6 @@
 package com.example.listenupv2.ui.fragments;
 
+import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -25,6 +26,7 @@ import com.example.listenupv2.model.entities.Favorite;
 import com.example.listenupv2.model.entities.Playlist;
 import com.example.listenupv2.model.roomdb.DataReceiver;
 import com.example.listenupv2.ui.AudioPlayer;
+import com.example.listenupv2.ui.PlayerActivity;
 import com.example.listenupv2.ui.adapters.RecyclerViewAdapter;
 import com.example.listenupv2.viewmodels.AudioViewModel;
 import com.example.listenupv2.viewmodels.FavoriteViewModel;
@@ -36,6 +38,7 @@ import java.util.List;
 
 public class AudiosFragment extends Fragment implements RecyclerViewAdapter.OnItemClickListener {
 
+    public static final String INTENT_AUDIO_CODE = "audioToPlay";
     private RecyclerView recyclerView;
     private RecyclerViewAdapter adapter;
     private AudioViewModel viewModel;
@@ -126,8 +129,10 @@ public class AudiosFragment extends Fragment implements RecyclerViewAdapter.OnIt
 
     @Override
     public void onItemClick(Audio audio) {
-        AudioPlayer player = new AudioPlayer(getContext(),Uri.parse(audio.getUri()));
-        player.play();
+
+        Intent intent = new Intent(getActivity(), PlayerActivity.class);
+        intent.putExtra(INTENT_AUDIO_CODE,audio);
+        startActivity(intent);
         Toast.makeText(getContext(), audio.getUri(), Toast.LENGTH_SHORT).show();
     }
 

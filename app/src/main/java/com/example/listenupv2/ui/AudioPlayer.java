@@ -5,7 +5,6 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.widget.Toast;
 
-import com.example.listenupv2.model.entities.Audio;
 
 public class AudioPlayer {
     private MediaPlayer mp;
@@ -18,9 +17,6 @@ public class AudioPlayer {
     }
 
     public void play(){
-        if (mp.isPlaying())
-            stop();
-        else
             mp.start();
     }
 
