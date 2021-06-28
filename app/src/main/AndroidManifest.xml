@@ -10,7 +10,8 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.ListenUpV2">
+        android:theme="@style/Theme.ListenUpV2"
+        android:requestLegacyExternalStorage="true">
         <activity android:name=".ui.PlaylistAudiosActivity"></activity>
         <activity android:name=".ui.PlayerActivity" />
         <activity android:name=".ui.MainActivity">

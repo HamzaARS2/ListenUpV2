@@ -13,6 +13,8 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Environment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -129,11 +131,10 @@ public class AudiosFragment extends Fragment implements RecyclerViewAdapter.OnIt
 
     @Override
     public void onItemClick(Audio audio) {
-
         Intent intent = new Intent(getActivity(), PlayerActivity.class);
         intent.putExtra(INTENT_AUDIO_CODE,audio);
+        Log.i("myTaggggggggg", "onItemClick: "+ Environment.getExternalStorageDirectory().getPath()+audio.getUri());
         startActivity(intent);
-        Toast.makeText(getContext(), audio.getUri(), Toast.LENGTH_SHORT).show();
     }
 
     @Override
