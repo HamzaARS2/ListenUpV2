@@ -7,9 +7,10 @@ import androidx.room.Relation;
 import com.example.listenupv2.model.entities.Audio;
 import com.example.listenupv2.model.entities.Playlist;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class PlaylistWithAudios {
+public class PlaylistWithAudios implements Serializable {
     @Embedded private Playlist playlist;
     @Relation(
             parentColumn = "playlist_id",

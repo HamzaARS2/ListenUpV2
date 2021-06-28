@@ -100,7 +100,8 @@ public class SavedPlaylistFragment extends BottomSheetDialogFragment implements 
     public void onItemClick(Playlist playlist) {
         crossRef.setPlaylist_id(playlist.getPlaylist_id());
             audioViewModel.insertPlaylistAudioCrossRef(crossRef);
-            Toast.makeText(getActivity(), playlist.getPlaylist_name() + " added successfully", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), playlist.getPlaylist_name() + " Added successfully", Toast.LENGTH_SHORT).show();
+            dismiss();
     }
 
     @Override

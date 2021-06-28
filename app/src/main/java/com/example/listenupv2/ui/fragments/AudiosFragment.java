@@ -114,8 +114,6 @@ public class AudiosFragment extends Fragment implements RecyclerViewAdapter.OnIt
                         favoriteViewModel.insert(favorite);
                         return true;
                     case R.id.audio_popup_addplaylist:
-                        Toast.makeText(getActivity(), ""+viewModel.getAllAudios().getValue().get(position).getAudio_id(), Toast.LENGTH_SHORT).show();
-//                        Toast.makeText(getActivity(), "Added to playlist", Toast.LENGTH_SHORT).show();
                         SavedPlaylistFragment fragment = SavedPlaylistFragment.newInstance(viewModel.getAllAudios().getValue().get(position));
                         fragment.show(getActivity().getSupportFragmentManager(),"SavedPlaylistFragment");
                         return true;

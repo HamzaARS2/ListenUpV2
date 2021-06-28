@@ -1,5 +1,6 @@
 package com.example.listenupv2.ui.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -18,14 +19,17 @@ import android.widget.Toast;
 import com.example.listenupv2.R;
 import com.example.listenupv2.model.entities.Playlist;
 import com.example.listenupv2.model.entities.relations.PlaylistWithAudios;
+import com.example.listenupv2.ui.PlaylistAudiosActivity;
 import com.example.listenupv2.ui.adapters.PlaylistAdapter;
 import com.example.listenupv2.viewmodels.PlaylistViewModel;
 
+import java.io.Serializable;
 import java.util.List;
 
 
 public class PlaylistFragment extends Fragment implements PlaylistAdapter.OnSavedPlaylistClick<PlaylistWithAudios>{
 
+    public static final String PLAYLIST_INTENT_CODE = "playlist";
     private RecyclerView recyclerView;
     private PlaylistAdapter adapter;
     private PlaylistViewModel viewModel;
@@ -85,6 +89,9 @@ public class PlaylistFragment extends Fragment implements PlaylistAdapter.OnSave
     // To open a playlist
     @Override
     public void onItemClick(PlaylistWithAudios playlist) {
+        Intent intent = new Intent(getActivity(), PlaylistAudiosActivity.class);
+        intent.putExtra(PLAYLIST_INTENT_CODE,  playlist);
+        startActivity(intent);
         Toast.makeText(getContext(), ""+playlist.getAudios().size(), Toast.LENGTH_SHORT).show();
     }
 }

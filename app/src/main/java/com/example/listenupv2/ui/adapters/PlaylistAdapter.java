@@ -1,5 +1,6 @@
 package com.example.listenupv2.ui.adapters;
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,6 +49,7 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.Playli
         ,listener);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull PlaylistHolder holder, int position) {
         switch (currentData){
@@ -56,6 +58,7 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.Playli
                 break;
             case PLAYLISTS_WITH_AUDIOS_INSTANCE:
                 holder.bind(playlistsWithAudios.get(position).getPlaylist().getPlaylist_name());
+                holder.totalAudios.setText(playlistsWithAudios.get(position).getAudios().size()+" Audios");
                 break;
         }
     }
@@ -85,11 +88,13 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.Playli
     class PlaylistHolder extends RecyclerView.ViewHolder {
         ImageView playlistImage;
         TextView playlistName;
+        TextView totalAudios;
 
         public PlaylistHolder(@NonNull View itemView, OnSavedPlaylistClick listener) {
             super(itemView);
             this.playlistImage = itemView.findViewById(R.id.playlist_audio_img);
             this.playlistName = itemView.findViewById(R.id.playlist_audio_title);
+            this.totalAudios = itemView.findViewById(R.id.total_audios_tv);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

@@ -49,7 +49,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/playlist_audio_img" />
 
             <TextView
-                android:id="@+id/textView"
+                android:id="@+id/total_audios_tv"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
