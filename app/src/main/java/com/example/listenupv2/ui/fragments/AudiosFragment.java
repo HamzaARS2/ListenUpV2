@@ -20,13 +20,13 @@ import android.widget.Toast;
 import com.example.listenupv2.R;
 import com.example.listenupv2.model.entities.Audio;
 import com.example.listenupv2.model.entities.Favorite;
+import com.example.listenupv2.model.entities.Playlist;
 import com.example.listenupv2.model.roomdb.DataReceiver;
 import com.example.listenupv2.ui.adapters.RecyclerViewAdapter;
-import com.example.listenupv2.ui.interfaces.AudioInteraction;
 import com.example.listenupv2.viewmodels.AudioViewModel;
 import com.example.listenupv2.viewmodels.FavoriteViewModel;
+import com.example.listenupv2.viewmodels.PlaylistViewModel;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -36,7 +36,9 @@ public class AudiosFragment extends Fragment {
     private RecyclerViewAdapter adapter;
     private AudioViewModel viewModel;
     private FavoriteViewModel favoriteViewModel;
+    private PlaylistViewModel playlistViewModel;
     private List<Audio> audios;
+    long playlist_id;
     public AudiosFragment() {
         // Required empty public constructor
     }
@@ -54,6 +56,7 @@ public class AudiosFragment extends Fragment {
         adapter = new RecyclerViewAdapter();
         viewModel = new ViewModelProvider(this).get(AudioViewModel.class);
         favoriteViewModel = new ViewModelProvider(this).get(FavoriteViewModel.class);
+        playlistViewModel = new ViewModelProvider(this).get(PlaylistViewModel.class);
         //audios = new DataReceiver(getContext()).getAvailableAudioFiles();
         //viewModel.deleteAllAudios();
 
@@ -90,7 +93,7 @@ public class AudiosFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);
-        adapter.setOnItemClickListener(new RecyclerViewAdapter.onItemClickListener() {
+        adapter.setOnItemClickListener(new RecyclerViewAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Audio audio) {
                 Toast.makeText(getContext(), audio.getUri(), Toast.LENGTH_SHORT).show();
@@ -117,7 +120,10 @@ public class AudiosFragment extends Fragment {
                         favoriteViewModel.insert(favorite);
                         return true;
                     case R.id.audio_popup_addplaylist:
-                        Toast.makeText(getActivity(), "Added to playlist", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), ""+viewModel.getAllAudios().getValue().get(position).getAudio_id(), Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(getActivity(), "Added to playlist", Toast.LENGTH_SHORT).show();
+                        SavedPlaylistFragment fragment = SavedPlaylistFragment.newInstance(viewModel.getAllAudios().getValue().get(position));
+                        fragment.show(getActivity().getSupportFragmentManager(),"SavedPlaylistFragment");
                         return true;
                 }
                 return false;

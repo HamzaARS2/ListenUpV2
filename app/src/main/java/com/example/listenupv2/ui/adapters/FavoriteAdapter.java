@@ -1,14 +1,12 @@
 package com.example.listenupv2.ui.adapters;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -75,7 +73,7 @@ public class FavoriteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         public Holder(@NonNull View itemView, OnFavoriteClicklistener listener) {
             super(itemView);
-            this.imageView = itemView.findViewById(R.id.audio_img_view);
+            this.imageView = itemView.findViewById(R.id.playlist_audio_img);
             this.title = itemView.findViewById(R.id.audio_tv_title);
             this.popupMenuBtn = itemView.findViewById(R.id.popup_menu_btn);
 

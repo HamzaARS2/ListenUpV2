@@ -2,10 +2,13 @@ package com.example.listenupv2.model.entities;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "playlist_table")
-public class Playlist {
+import java.io.Serializable;
+
+@Entity(tableName = "playlist_table",indices = {@Index(value = {"playlist_name"} , unique = true)})
+public class Playlist implements Serializable {
 
     @PrimaryKey(autoGenerate = true)
     private int playlist_id;

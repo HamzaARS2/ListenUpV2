@@ -1,6 +1,5 @@
 package com.example.listenupv2.model.roomdb.daos;
 
-import android.database.Cursor;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
@@ -8,13 +7,12 @@ import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
-import androidx.room.RawQuery;
 import androidx.room.Transaction;
 import androidx.room.Update;
-import androidx.sqlite.db.SimpleSQLiteQuery;
 
 import com.example.listenupv2.model.entities.Audio;
 import com.example.listenupv2.model.entities.relations.AudioWithPlaylists;
+import com.example.listenupv2.model.entities.relations.PlaylistAudioCrossRef;
 
 import java.util.List;
 
@@ -23,6 +21,9 @@ public interface AudioDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insert(Audio audio);
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertPlaylistAudioCrossRef(PlaylistAudioCrossRef crossRef);
 
     @Update
     void update(Audio audio);
@@ -46,8 +47,8 @@ public interface AudioDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insertAudioList(List<Audio> audioList);
 
-    @Query("SELECT * FROM audio_table WHERE uri = :audio_uri ")
-    LiveData<Audio> getAudio(String audio_uri);
+    @Query("SELECT * FROM audio_table WHERE title = :pTitle ")
+    LiveData<Audio> getAudio(String pTitle);
 
 
 

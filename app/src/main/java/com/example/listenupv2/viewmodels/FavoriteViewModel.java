@@ -22,6 +22,8 @@ public class FavoriteViewModel extends AndroidViewModel {
         this.allFavorites = this.repository.getAllFavorites();
     }
 
+
+
     public void insert(Favorite favoriteAudio){
         repository.insert(favoriteAudio);
     }
@@ -42,4 +44,5 @@ public class FavoriteViewModel extends AndroidViewModel {
     public LiveData<List<Favorite>> getAllFavorites() {
         return allFavorites;
     }
+
 }

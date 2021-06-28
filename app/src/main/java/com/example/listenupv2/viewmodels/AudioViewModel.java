@@ -12,6 +12,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.example.listenupv2.R;
 import com.example.listenupv2.model.entities.Audio;
+import com.example.listenupv2.model.entities.relations.PlaylistAudioCrossRef;
 import com.example.listenupv2.model.roomdb.AudioDatabase;
 import com.example.listenupv2.model.roomdb.repositories.AudioRepository;
 import com.example.listenupv2.ui.interfaces.AudioInteraction;
@@ -39,6 +40,10 @@ public class AudioViewModel extends AndroidViewModel {
         repository.insert(audio);
     }
 
+    public void insertPlaylistAudioCrossRef(PlaylistAudioCrossRef crossRef){
+        repository.insertPlaylistAudioCrossRef(crossRef);
+    }
+
     public void update(Audio audio){
         repository.update(audio);
     }
@@ -55,8 +60,8 @@ public class AudioViewModel extends AndroidViewModel {
         repository.insertAudioList(audioList);
     }
 
-    public LiveData<Audio> getAudio(String audio_uri){
-        return repository.getAudio(audio_uri);
+    public LiveData<Audio> getAudio(String pTitle){
+        return repository.getAudio(pTitle);
     }
 
 

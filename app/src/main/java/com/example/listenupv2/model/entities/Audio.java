@@ -7,8 +7,10 @@ import androidx.room.Entity;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
+import java.io.Serializable;
+
 @Entity(tableName = "audio_table", indices = {@Index(value = {"title","uri"},unique = true)})
-public class Audio {
+public class Audio implements Serializable {
 
     @PrimaryKey(autoGenerate = true)
     private int audio_id;

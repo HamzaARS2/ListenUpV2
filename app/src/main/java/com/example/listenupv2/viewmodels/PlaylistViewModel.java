@@ -7,6 +7,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
 import com.example.listenupv2.model.entities.Playlist;
+import com.example.listenupv2.model.entities.relations.PlaylistWithAudios;
 import com.example.listenupv2.model.roomdb.repositories.PlaylistRepository;
 
 import java.util.List;
@@ -23,8 +24,8 @@ public class PlaylistViewModel extends AndroidViewModel {
     }
 
 
-    public void insert(Playlist playlist){
-        repository.insert(playlist);
+    public long insert(Playlist playlist){
+        return repository.insert(playlist);
     }
 
     public void update(Playlist playlist){
@@ -38,6 +39,10 @@ public class PlaylistViewModel extends AndroidViewModel {
     public void deleteAllPlaylists(){
         repository.deleteAllPlaylists();
     }
+
+   public LiveData<List<PlaylistWithAudios>> getPlaylistsWithAudios(){
+        return repository.getPlaylistsWithAudios();
+   }
 
     public LiveData<List<Playlist>> getAllPlaylists() {
         return allPlaylists;

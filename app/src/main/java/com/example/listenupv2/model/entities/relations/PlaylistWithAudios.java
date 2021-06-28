@@ -10,11 +10,27 @@ import com.example.listenupv2.model.entities.Playlist;
 import java.util.List;
 
 public class PlaylistWithAudios {
-    @Embedded public Playlist playlist;
+    @Embedded private Playlist playlist;
     @Relation(
             parentColumn = "playlist_id",
             entityColumn = "audio_id",
             associateBy = @Junction(PlaylistAudioCrossRef.class)
     )
-    public List<Audio> audios;
+    private List<Audio> audios;
+
+    public void setPlaylist(Playlist playlist) {
+        this.playlist = playlist;
+    }
+
+    public void setAudios(List<Audio> audios) {
+        this.audios = audios;
+    }
+
+    public Playlist getPlaylist() {
+        return playlist;
+    }
+
+    public List<Audio> getAudios() {
+        return audios;
+    }
 }

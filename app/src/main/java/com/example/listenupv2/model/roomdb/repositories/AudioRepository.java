@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.listenupv2.model.entities.Audio;
+import com.example.listenupv2.model.entities.relations.PlaylistAudioCrossRef;
 import com.example.listenupv2.model.roomdb.AudioDatabase;
 import com.example.listenupv2.model.roomdb.DataReceiver;
 import com.example.listenupv2.model.roomdb.daos.AudioDao;
@@ -16,13 +17,14 @@ import java.util.List;
 public class AudioRepository {
 
     private AudioDao audioDao;
-    private static int lastSize = -1;
     private LiveData<List<Audio>> allAudios;
+    private LiveData<Audio> audio;
 
     public AudioRepository(Application application){
         AudioDatabase database = AudioDatabase.getInstance(application);
         this.audioDao = database.audioDao();
         this.allAudios = this.audioDao.getAllAudios();
+
 
     }
 
@@ -31,6 +33,12 @@ public class AudioRepository {
             audioDao.insert(audio);
                 });
 
+    }
+
+    public void insertPlaylistAudioCrossRef(PlaylistAudioCrossRef crossRef){
+        AudioDatabase.databaseExecutor.execute(() -> {
+            audioDao.insertPlaylistAudioCrossRef(crossRef);
+        });
     }
 
     public void update(Audio audio){
@@ -57,9 +65,8 @@ public class AudioRepository {
         });
     }
 
-    public LiveData<Audio> getAudio(String audio_uri){
-        LiveData<Audio> audioLiveData = audioDao.getAudio(audio_uri);
-        return audioLiveData;
+    public LiveData<Audio> getAudio(String pTitle){
+        return audioDao.getAudio(pTitle);
     }
 
     public LiveData<List<Audio>> getAllAudios() {

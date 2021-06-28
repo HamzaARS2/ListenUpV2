@@ -5,7 +5,6 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import android.util.Log;
 import android.widget.PopupMenu;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
@@ -24,17 +23,12 @@ import com.example.listenupv2.model.entities.Audio;
 import com.example.listenupv2.model.entities.Favorite;
 import com.example.listenupv2.model.roomdb.DataReceiver;
 import com.example.listenupv2.ui.adapters.FavoriteAdapter;
-import com.example.listenupv2.ui.adapters.RecyclerViewAdapter;
 import com.example.listenupv2.viewmodels.FavoriteViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link FavoriteFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class FavoriteFragment extends Fragment implements FavoriteAdapter.OnFavoriteClicklistener {
 
 
@@ -77,10 +71,8 @@ public class FavoriteFragment extends Fragment implements FavoriteAdapter.OnFavo
         viewModel.getAllFavorites().observe(this, new Observer<List<Favorite>>() {
             @Override
             public void onChanged(List<Favorite> favorites) {
-                Toast.makeText(getContext(), "resume", Toast.LENGTH_SHORT).show();
-                isExist(favorites);
+                updateList(favorites);
                 adapter.setFavorites(favorites);
-
             }
         });
     }
@@ -103,7 +95,7 @@ public class FavoriteFragment extends Fragment implements FavoriteAdapter.OnFavo
         adapter.setOnItemClickListener(this);
     }
 
-    public void isExist(List<Favorite> favorites) {
+    public void updateList(List<Favorite> favorites) {
         ArrayList<Audio> audios = new DataReceiver(getContext()).getAvailableAudioFiles();
                 for (int i = 0; i < favorites.size(); i++){
                     boolean isExist = false;
@@ -127,7 +119,6 @@ public class FavoriteFragment extends Fragment implements FavoriteAdapter.OnFavo
     @Override
     public void onPopupMenuClick(Favorite favoriteAudio, int position, View view) {
         showFavoritePopupMenu(view,favoriteAudio);
-
     }
 
     public void showFavoritePopupMenu(View view, Favorite favorite){

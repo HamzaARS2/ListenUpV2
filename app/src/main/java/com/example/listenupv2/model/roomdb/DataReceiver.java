@@ -23,7 +23,7 @@ public class DataReceiver {
     public ArrayList<Audio> getAvailableAudioFiles(){
         ArrayList<Audio> audioList = new ArrayList<>();
         ContentResolver resolver = context.getContentResolver();
-        Uri audioUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+        Uri audioUri = MediaStore.Audio.Media.INTERNAL_CONTENT_URI;
         Cursor audioCursor = null;
         audioCursor = resolver.query(audioUri,null,null,null,null);
         while (audioCursor != null && audioCursor.moveToNext()){
