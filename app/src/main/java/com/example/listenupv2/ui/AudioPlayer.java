@@ -6,62 +6,67 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.widget.Toast;
 
+import com.example.listenupv2.model.entities.Audio;
+
+import java.io.File;
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 
 public class AudioPlayer {
-    private MediaPlayer mp;
+    public  static MediaPlayer mp;
     private Context context;
-    private MediaPlayer.OnCompletionListener listener;
-    public AudioPlayer(Context context, Uri uri){
+    public static Audio audio;
+    public AudioPlayer(Context context, Audio audio){
         this.context = context;
+        AudioPlayer.audio = audio;
         if (mp == null) {
-            mp = MediaPlayer.create(context, uri);
+            mp = MediaPlayer.create(context, Uri.fromFile(new File(audio.getUri())));
             mp.seekTo(0);
         }
     }
 
-    public void play(){
+    public static void play(){
         mp.start();
     }
 
-    public void pause(){
+
+    public static void pause(){
         mp.pause();
     }
 
-    public void stop(){
-        mp.release();
-        Toast.makeText(context, "released", Toast.LENGTH_SHORT).show();
-    }
 
-
-    public void seekTo(int progress){
+    public static void seekTo(int progress){
         mp.seekTo(progress);
     }
 
-    public void stopAudio(){
+    public static void stopAudio(){
         mp.release();
+        mp = null;
     }
 
-    public void setOnCompletionListener(MediaPlayer.OnCompletionListener listener){
-        this.listener = listener;
+    public static void setOnCompletionListener(MediaPlayer.OnCompletionListener listener){
         mp.setOnCompletionListener(listener);
     }
 
-    public int getCurrentPosition(){
+    public static int getCurrentPosition(){
         return mp.getCurrentPosition();
     }
 
-    public int getAudioDuration() {
+    public static int getAudioDuration() {
         return mp.getDuration();
     }
 
-    public String getConvertedAudioDuration(){
+    public static String getConvertedAudioDuration(){
         return convertTime(mp.getDuration());
     }
 
+    public static boolean isPlaying(){
+        return mp.isPlaying();
+    }
+
     @SuppressLint("DefaultLocale")
-    public String convertTime(int milliseconds) {
+    public static String convertTime(int milliseconds) {
         String convertedTime =  String.format("%02d:%02d"
                 ,TimeUnit.MILLISECONDS.toMinutes(milliseconds)
                 ,TimeUnit.MILLISECONDS.toSeconds(milliseconds) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(milliseconds)));

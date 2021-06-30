@@ -13,8 +13,10 @@
         android:theme="@style/Theme.ListenUpV2"
         android:requestLegacyExternalStorage="true">
         <activity android:name=".ui.PlaylistAudiosActivity"></activity>
-        <activity android:name=".ui.PlayerActivity" />
-        <activity android:name=".ui.MainActivity">
+        <activity android:name=".ui.PlayerActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".ui.MainActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

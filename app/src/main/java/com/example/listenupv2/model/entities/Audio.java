@@ -39,4 +39,10 @@ public class Audio implements Serializable {
     public String getUri() {
         return uri;
     }
+
+    public static Audio parse(Favorite favorite){
+        Audio audio = new Audio(favorite.getFavorite_title(),favorite.getFavorite_uri());
+        audio.setAudio_id(favorite.getFavorite_id());
+        return audio;
+    }
 }

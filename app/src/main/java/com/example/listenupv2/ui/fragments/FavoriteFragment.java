@@ -1,5 +1,6 @@
 package com.example.listenupv2.ui.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -22,6 +23,7 @@ import com.example.listenupv2.R;
 import com.example.listenupv2.model.entities.Audio;
 import com.example.listenupv2.model.entities.Favorite;
 import com.example.listenupv2.model.roomdb.DataReceiver;
+import com.example.listenupv2.ui.PlayerActivity;
 import com.example.listenupv2.ui.adapters.FavoriteAdapter;
 import com.example.listenupv2.viewmodels.FavoriteViewModel;
 
@@ -61,7 +63,6 @@ public class FavoriteFragment extends Fragment implements FavoriteAdapter.OnFavo
 //        favoriteArrayList.add(new Favorite(3,"favorite3","uri3"));
 
 
-        Toast.makeText(getContext(), "onCreate", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -113,7 +114,9 @@ public class FavoriteFragment extends Fragment implements FavoriteAdapter.OnFavo
 
     @Override
     public void onItemClick(Favorite favoriteAudio) {
-        Toast.makeText(getActivity(), favoriteAudio.getFavorite_title(), Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(getActivity(), PlayerActivity.class);
+        intent.putExtra(AudiosFragment.INTENT_AUDIO_CODE,favoriteAudio);
+        startActivity(intent);
     }
 
     @Override

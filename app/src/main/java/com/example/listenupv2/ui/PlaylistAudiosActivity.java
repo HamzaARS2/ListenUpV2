@@ -11,11 +11,13 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.example.listenupv2.R;
+import com.example.listenupv2.model.entities.Audio;
 import com.example.listenupv2.model.entities.relations.PlaylistWithAudios;
 import com.example.listenupv2.ui.adapters.RecyclerViewAdapter;
+import com.example.listenupv2.ui.fragments.AudiosFragment;
 import com.example.listenupv2.ui.fragments.PlaylistFragment;
 
-public class PlaylistAudiosActivity extends AppCompatActivity {
+public class PlaylistAudiosActivity extends AppCompatActivity implements RecyclerViewAdapter.OnItemClickListener {
 
     private RecyclerView recyclerView;
     private View view;
@@ -45,6 +47,7 @@ public class PlaylistAudiosActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);
+        adapter.setOnItemClickListener(this);
     }
 
     @SuppressLint("SetTextI18n")
@@ -53,6 +56,17 @@ public class PlaylistAudiosActivity extends AppCompatActivity {
         totalAudios.setText(playlist.getAudios().size()+" Audios");
     }
 
+    @Override
+    public void onItemClick(Audio audio) {
+        Intent intent = new Intent(this, PlayerActivity.class);
+        intent.putExtra(AudiosFragment.INTENT_AUDIO_CODE,audio);
+        startActivity(intent);
+    }
+
+    @Override
+    public void onPopupMenuClick(Audio audio, int position, View view) {
+
+    }
 }
 
 

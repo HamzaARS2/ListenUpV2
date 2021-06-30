@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.example.listenupv2.R;
 import com.example.listenupv2.databinding.ActivityPlayerBinding;
 import com.example.listenupv2.model.entities.Audio;
+import com.example.listenupv2.model.entities.Favorite;
 import com.example.listenupv2.ui.fragments.AudiosFragment;
 
 import java.io.File;
@@ -22,7 +23,7 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 
     private ActivityPlayerBinding binding;
     private Audio audio;
-    private AudioPlayer player;
+    private static AudioPlayer player;
     private Handler handler = new Handler();
     private Runnable runnable;
     @Override
@@ -34,40 +35,44 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
         binding.playerBtnSkipNext.setOnClickListener(this);
         binding.playerBtnSkipPrevious.setOnClickListener(this);
         binding.seekBar.setOnSeekBarChangeListener(this);
+        binding.activityPlayerAudioName.setSelected(true);
         prepareAudio();
-        binding.seekBar.setMax(player.getAudioDuration());
-        player.setOnCompletionListener(this::onCompletion);
+
+        AudioPlayer.setOnCompletionListener(this::onCompletion);
 
         runnable = new Runnable() {
             @Override
             public void run() {
-                binding.seekBar.setProgress(player.getCurrentPosition());
+                binding.seekBar.setProgress(AudioPlayer.getCurrentPosition());
                 handler.postDelayed(this,1000);
             }
         };
 
-
+        AudioPlayer.play();
+        handler.postDelayed(runnable,0);
 
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        player.play();
-        handler.postDelayed(runnable,0);
+
     }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.player_btn_play:
-                player.play();
+                if (AudioPlayer.isPlaying()){
+                    AudioPlayer.stopAudio();
+                }
+                AudioPlayer.play();
                 handler.postDelayed(runnable,0);
                 binding.playerBtnPause.setVisibility(View.VISIBLE);
                 binding.playerBtnPlay.setVisibility(View.GONE);
                 break;
             case R.id.player_btn_pause:
-                player.pause();
+                AudioPlayer.pause();
                 handler.removeCallbacks(runnable);
                 binding.playerBtnPlay.setVisibility(View.VISIBLE);
                 binding.playerBtnPause.setVisibility(View.GONE);
@@ -83,19 +88,37 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 
     public void prepareAudio(){
         if (getIntent() != null){
-            audio = (Audio) getIntent().getSerializableExtra(AudiosFragment.INTENT_AUDIO_CODE);
-            player = new AudioPlayer(getBaseContext(),Uri.fromFile(new File(audio.getUri())));
-            binding.activityPlayerAudioName.setText(audio.getTitle());
-            binding.durationTv.setText(player.getConvertedAudioDuration());
+            Object file = getIntent().getSerializableExtra(AudiosFragment.INTENT_AUDIO_CODE);
+            if (file instanceof Favorite){
+                audio = Audio.parse((Favorite) file);
+            }else
+            audio = (Audio) file;
+                if (player != null){
+                    if (!audio.getUri().equals(AudioPlayer.audio.getUri())) {
+                        AudioPlayer.stopAudio();
+                        handler.removeCallbacks(runnable);
+                        player = null;
+                    }else {
+                        binding.activityPlayerAudioName.setText(audio.getTitle());
+                        binding.durationTv.setText(AudioPlayer.getConvertedAudioDuration());
+                        binding.seekBar.setMax(AudioPlayer.getAudioDuration());
+                        return;
+                    }
+                }
+
+                player = new AudioPlayer(getBaseContext(), audio);
+                binding.activityPlayerAudioName.setText(audio.getTitle());
+                binding.durationTv.setText(AudioPlayer.getConvertedAudioDuration());
+                binding.seekBar.setMax(AudioPlayer.getAudioDuration());
         }
     }
 
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
         if (fromUser) {
-            player.seekTo(progress);
+            AudioPlayer.seekTo(progress);
         }
-            binding.positionTimeTv.setText(player.convertTime(progress));
+            binding.positionTimeTv.setText(AudioPlayer.convertTime(progress));
 
     }
 
@@ -111,10 +134,15 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 
     @Override
     public void onCompletion(MediaPlayer mp) {
-        Toast.makeText(this, "complete", Toast.LENGTH_SHORT).show();
         binding.playerBtnPause.setVisibility(View.GONE);
         binding.playerBtnPlay.setVisibility(View.VISIBLE);
         binding.seekBar.setProgress(0);
-        player.seekTo(0);
+        AudioPlayer.seekTo(0);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
     }
 }

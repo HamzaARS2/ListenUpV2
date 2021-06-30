@@ -5,8 +5,10 @@ import androidx.room.Entity;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
+import java.io.Serializable;
+
 @Entity(tableName = "favorite_table", indices = {@Index(value = {"favorite_title","favorite_uri"},unique = true)})
-public class Favorite {
+public class Favorite implements Serializable {
 
     @PrimaryKey(autoGenerate = true)
     private int favorite_id;

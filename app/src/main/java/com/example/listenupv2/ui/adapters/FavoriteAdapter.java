@@ -75,7 +75,7 @@ public class FavoriteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             super(itemView);
             this.imageView = itemView.findViewById(R.id.playlist_audio_img);
             this.title = itemView.findViewById(R.id.audio_tv_title);
-            this.popupMenuBtn = itemView.findViewById(R.id.popup_menu_btn);
+            this.popupMenuBtn = itemView.findViewById(R.id.control_play_btn);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

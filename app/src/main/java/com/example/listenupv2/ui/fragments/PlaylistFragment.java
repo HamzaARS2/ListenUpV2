@@ -92,6 +92,5 @@ public class PlaylistFragment extends Fragment implements PlaylistAdapter.OnSave
         Intent intent = new Intent(getActivity(), PlaylistAudiosActivity.class);
         intent.putExtra(PLAYLIST_INTENT_CODE,  playlist);
         startActivity(intent);
-        Toast.makeText(getContext(), ""+playlist.getAudios().size(), Toast.LENGTH_SHORT).show();
     }
 }

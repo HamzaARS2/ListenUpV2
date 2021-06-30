@@ -31,8 +31,10 @@ public class DataReceiver {
 //            String artist = audioCursor.getString(audioCursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
 //            String duration = audioCursor.getString(audioCursor.getColumnIndex(MediaStore.Audio.Media.DURATION));
             String url = audioCursor.getString(audioCursor.getColumnIndex(MediaStore.Audio.Media.DATA));
-            Audio audio = new Audio(title,url);
-            audioList.add(audio);
+            if (url.endsWith(".mp3")) {
+                Audio audio = new Audio(title, url);
+                audioList.add(audio);
+            }
         }
         return audioList;
     }

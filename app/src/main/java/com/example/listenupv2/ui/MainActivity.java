@@ -6,6 +6,8 @@ import androidx.appcompat.widget.SearchView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.FragmentContainerView;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
@@ -14,18 +16,23 @@ import android.os.Environment;
 import android.os.FileObserver;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.example.listenupv2.R;
 import com.example.listenupv2.databinding.ActivityMainBinding;
+import com.example.listenupv2.model.entities.Audio;
 import com.example.listenupv2.ui.adapters.ViewPagerAdapter;
+import com.example.listenupv2.ui.fragments.AudioControllerFragment;
 import com.google.android.material.tabs.TabLayoutMediator;
 
 public class MainActivity extends AppCompatActivity {
 
+
     private static final int PERMISSION_REQ_CODE = 1;
     private ActivityMainBinding binding;
     private ViewPagerAdapter pagerAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,10 +41,30 @@ public class MainActivity extends AppCompatActivity {
         buildViewPager();
         requestPermission();
 
+
     }
 
 
-    public void buildViewPager(){
+    @Override
+    protected void onResume() {
+        super.onResume();
+        showBottomAudioIfRunning();
+    }
+
+    private void showBottomAudioIfRunning(){
+        if (AudioPlayer.mp != null) {
+            binding.controllerContainer.setVisibility(View.VISIBLE);
+            AudioControllerFragment fragment = AudioControllerFragment.newInstance(AudioPlayer.audio);
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.setReorderingAllowed(true);
+            ft.add(R.id.controller_container, fragment);
+            ft.commit();
+        }else {
+            binding.controllerContainer.setVisibility(View.GONE);
+        }
+    }
+
+    private void buildViewPager(){
         pagerAdapter = new ViewPagerAdapter(this);
         binding.viewpager2.setAdapter(pagerAdapter);
         attachTablayoutWithViewPager();

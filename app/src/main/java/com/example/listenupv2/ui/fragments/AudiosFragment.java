@@ -80,7 +80,6 @@ public class AudiosFragment extends Fragment implements RecyclerViewAdapter.OnIt
         viewModel.getAllAudios().observe(this, new Observer<List<Audio>>() {
             @Override
             public void onChanged(List<Audio> audioList) {
-                Toast.makeText(getContext(), ""+audios.size(), Toast.LENGTH_SHORT).show();
                 adapter.setAudios(audios);
             }
         });
@@ -114,7 +113,7 @@ public class AudiosFragment extends Fragment implements RecyclerViewAdapter.OnIt
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()){
                     case R.id.audio_popup_addfavorite:
-                        Toast.makeText(getActivity(), "Added to favorites", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "Added successfully", Toast.LENGTH_SHORT).show();
                         Favorite favorite = new Favorite(audio.getTitle(),audio.getUri());
                         favoriteViewModel.insert(favorite);
                         return true;
@@ -133,7 +132,6 @@ public class AudiosFragment extends Fragment implements RecyclerViewAdapter.OnIt
     public void onItemClick(Audio audio) {
         Intent intent = new Intent(getActivity(), PlayerActivity.class);
         intent.putExtra(INTENT_AUDIO_CODE,audio);
-        Log.i("myTaggggggggg", "onItemClick: "+ Environment.getExternalStorageDirectory().getPath()+audio.getUri());
         startActivity(intent);
     }
 
