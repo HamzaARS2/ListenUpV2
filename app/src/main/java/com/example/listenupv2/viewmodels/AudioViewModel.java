@@ -52,6 +52,9 @@ public class AudioViewModel extends AndroidViewModel {
         repository.delete(audio);
     }
 
+    public void deleteAudioFromPlaylist(int audioId, int playlistId){
+        repository.deleteAudioFromPlaylist(audioId,playlistId);
+    }
     public void deleteAllAudios(){
         repository.deleteAllAudios();
     }
@@ -60,9 +63,6 @@ public class AudioViewModel extends AndroidViewModel {
         repository.insertAudioList(audioList);
     }
 
-    public LiveData<Audio> getAudio(String pTitle){
-        return repository.getAudio(pTitle);
-    }
 
 
 

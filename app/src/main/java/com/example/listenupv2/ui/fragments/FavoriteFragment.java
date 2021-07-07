@@ -6,6 +6,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import android.os.Parcelable;
 import android.widget.PopupMenu;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
@@ -37,7 +38,6 @@ public class FavoriteFragment extends Fragment implements FavoriteAdapter.OnFavo
     private RecyclerView recyclerView;
     private FavoriteAdapter adapter;
     private FavoriteViewModel viewModel;
-
 
 
     public FavoriteFragment() {
@@ -96,6 +96,7 @@ public class FavoriteFragment extends Fragment implements FavoriteAdapter.OnFavo
         adapter.setOnItemClickListener(this);
     }
 
+    // Checks deleted audios from external storage
     public void updateList(List<Favorite> favorites) {
         ArrayList<Audio> audios = new DataReceiver(getContext()).getAvailableAudioFiles();
                 for (int i = 0; i < favorites.size(); i++){
@@ -113,9 +114,11 @@ public class FavoriteFragment extends Fragment implements FavoriteAdapter.OnFavo
     }
 
     @Override
-    public void onItemClick(Favorite favoriteAudio) {
+    public void onItemClick(int favoriteIndex, ArrayList<Favorite> favoriteList) {
+
         Intent intent = new Intent(getActivity(), PlayerActivity.class);
-        intent.putExtra(AudiosFragment.INTENT_AUDIO_CODE,favoriteAudio);
+        intent.putExtra(PlayerActivity.INTENT_AUDIO_INDEX_KEY,favoriteIndex);
+        intent.putParcelableArrayListExtra(PlayerActivity.INTENT_AUDIO_LIST_KEY, Audio.parseList(favoriteList));
         startActivity(intent);
     }
 

@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Environment;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -35,18 +36,20 @@ import com.example.listenupv2.viewmodels.FavoriteViewModel;
 import com.example.listenupv2.viewmodels.PlaylistViewModel;
 
 import java.io.IOException;
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 
 public class AudiosFragment extends Fragment implements RecyclerViewAdapter.OnItemClickListener {
 
-    public static final String INTENT_AUDIO_CODE = "audioToPlay";
+
     private RecyclerView recyclerView;
     private RecyclerViewAdapter adapter;
     private AudioViewModel viewModel;
     private FavoriteViewModel favoriteViewModel;
     private PlaylistViewModel playlistViewModel;
-    private List<Audio> audios;
+    private ArrayList<Audio> audios;
     public AudiosFragment() {
         // Required empty public constructor
     }
@@ -129,9 +132,10 @@ public class AudiosFragment extends Fragment implements RecyclerViewAdapter.OnIt
 
 
     @Override
-    public void onItemClick(Audio audio) {
+    public void onItemClick(int audioIndex) {
         Intent intent = new Intent(getActivity(), PlayerActivity.class);
-        intent.putExtra(INTENT_AUDIO_CODE,audio);
+        intent.putParcelableArrayListExtra(PlayerActivity.INTENT_AUDIO_LIST_KEY,audios);
+        intent.putExtra(PlayerActivity.INTENT_AUDIO_INDEX_KEY,audioIndex);
         startActivity(intent);
     }
 

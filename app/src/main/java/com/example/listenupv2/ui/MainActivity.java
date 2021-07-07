@@ -10,6 +10,8 @@ import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.Manifest;
+import android.app.Activity;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Environment;
@@ -51,10 +53,10 @@ public class MainActivity extends AppCompatActivity {
         showBottomAudioIfRunning();
     }
 
-    private void showBottomAudioIfRunning(){
+    private  void showBottomAudioIfRunning(){
         if (AudioPlayer.mp != null) {
             binding.controllerContainer.setVisibility(View.VISIBLE);
-            AudioControllerFragment fragment = AudioControllerFragment.newInstance(AudioPlayer.audio);
+            AudioControllerFragment fragment = AudioControllerFragment.newInstance(AudioPlayer.audio,AudioPlayer.isPlaying());
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.setReorderingAllowed(true);
             ft.add(R.id.controller_container, fragment);

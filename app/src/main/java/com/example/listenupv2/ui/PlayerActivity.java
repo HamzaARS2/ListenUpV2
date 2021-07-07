@@ -3,11 +3,13 @@ package com.example.listenupv2.ui;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
+import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
@@ -18,11 +20,18 @@ import com.example.listenupv2.model.entities.Favorite;
 import com.example.listenupv2.ui.fragments.AudiosFragment;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PlayerActivity extends AppCompatActivity implements View.OnClickListener, SeekBar.OnSeekBarChangeListener, MediaPlayer.OnCompletionListener {
 
+    public static final String INTENT_AUDIO_CODE = "audioToPlay";
+    public static final String INTENT_AUDIO_LIST_KEY = " listToBeQueued";
+    public static final String INTENT_AUDIO_INDEX_KEY = " audioIndexToPlay";
     private ActivityPlayerBinding binding;
-    private Audio audio;
+    private static Audio currentAudio;
+    private static List<Audio> audioList;
+    public static int currentAudioIndex;
     private static AudioPlayer player;
     private Handler handler = new Handler();
     private Runnable runnable;
@@ -36,10 +45,7 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
         binding.playerBtnSkipPrevious.setOnClickListener(this);
         binding.seekBar.setOnSeekBarChangeListener(this);
         binding.activityPlayerAudioName.setSelected(true);
-        prepareAudio();
-
-        AudioPlayer.setOnCompletionListener(this::onCompletion);
-
+        getAudioList();
         runnable = new Runnable() {
             @Override
             public void run() {
@@ -47,16 +53,42 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
                 handler.postDelayed(this,1000);
             }
         };
+        prepareAudio(currentAudio);
 
-        AudioPlayer.play();
-        handler.postDelayed(runnable,0);
+
 
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        binding.loopCheckbox.setChecked(AudioPlayer.isLooping());
+        binding.loopCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                AudioPlayer.setLooping(isChecked);
+            }
+        });
 
+    }
+
+
+    public void startAudio(){
+        AudioPlayer.play();
+        handler.postDelayed(runnable, 0);
+        playingView();
+    }
+
+    public void pauseAudio(){
+        AudioPlayer.pause();
+        handler.removeCallbacks(runnable);
+        pausedView();
+    }
+
+    public void releaseAudio(){
+        AudioPlayer.stopAudio();
+        handler.removeCallbacks(runnable);
+        pausedView();
     }
 
     @Override
@@ -65,52 +97,74 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
             case R.id.player_btn_play:
                 if (AudioPlayer.isPlaying()){
                     AudioPlayer.stopAudio();
+                }else if (AudioPlayer.mp == null){
+                    setCurrentAudio(currentAudio);
                 }
-                AudioPlayer.play();
-                handler.postDelayed(runnable,0);
-                binding.playerBtnPause.setVisibility(View.VISIBLE);
-                binding.playerBtnPlay.setVisibility(View.GONE);
+               startAudio();
                 break;
             case R.id.player_btn_pause:
-                AudioPlayer.pause();
-                handler.removeCallbacks(runnable);
-                binding.playerBtnPlay.setVisibility(View.VISIBLE);
-                binding.playerBtnPause.setVisibility(View.GONE);
+                pauseAudio();
                 break;
             case R.id.player_btn_skip_next:
-                Toast.makeText(this, "Next audio", Toast.LENGTH_SHORT).show();
+                restAudio();
+                startNextAudio();
                 break;
             case R.id.player_btn_skip_previous:
-                Toast.makeText(this, "Previous audio", Toast.LENGTH_SHORT).show();
+                restAudio();
+                startPreviousAudio();
                 break;
         }
     }
 
-    public void prepareAudio(){
-        if (getIntent() != null){
-            Object file = getIntent().getSerializableExtra(AudiosFragment.INTENT_AUDIO_CODE);
-            if (file instanceof Favorite){
-                audio = Audio.parse((Favorite) file);
-            }else
-            audio = (Audio) file;
-                if (player != null){
-                    if (!audio.getUri().equals(AudioPlayer.audio.getUri())) {
+
+
+    public void playingView(){
+        binding.playerBtnPause.setVisibility(View.VISIBLE);
+        binding.playerBtnPlay.setVisibility(View.GONE);
+    }
+
+    public void pausedView(){
+        binding.playerBtnPlay.setVisibility(View.VISIBLE);
+        binding.playerBtnPause.setVisibility(View.GONE);
+    }
+
+    private void getAudioList(){
+        int audioIndex = getIntent().getIntExtra(INTENT_AUDIO_INDEX_KEY,-1);
+        ArrayList<Audio> queueList= getIntent().getParcelableArrayListExtra(INTENT_AUDIO_LIST_KEY);
+        if (audioIndex != -1)
+            currentAudioIndex = audioIndex;
+        if (queueList != null)
+            audioList = getIntent().getParcelableArrayListExtra(INTENT_AUDIO_LIST_KEY);
+            currentAudio = audioList.get(currentAudioIndex);
+    }
+
+    public void prepareAudio(Audio currentAudio){
+                if(player != null){
+                    if (!currentAudio.getUri().equals(AudioPlayer.audio.getUri())) {
                         AudioPlayer.stopAudio();
                         handler.removeCallbacks(runnable);
                         player = null;
                     }else {
-                        binding.activityPlayerAudioName.setText(audio.getTitle());
+                        if (!AudioPlayer.isPlaying()){
+                            pausedView();
+                        }
+                        binding.activityPlayerAudioName.setText(currentAudio.getTitle());
                         binding.durationTv.setText(AudioPlayer.getConvertedAudioDuration());
                         binding.seekBar.setMax(AudioPlayer.getAudioDuration());
+                        handler.postDelayed(runnable,0);
                         return;
                     }
                 }
+                setCurrentAudio(currentAudio);
+    }
 
-                player = new AudioPlayer(getBaseContext(), audio);
-                binding.activityPlayerAudioName.setText(audio.getTitle());
-                binding.durationTv.setText(AudioPlayer.getConvertedAudioDuration());
-                binding.seekBar.setMax(AudioPlayer.getAudioDuration());
-        }
+    private void setCurrentAudio(Audio audio){
+        player = new AudioPlayer(getBaseContext(), audio);
+        binding.activityPlayerAudioName.setText(audio.getTitle());
+        binding.durationTv.setText(AudioPlayer.getConvertedAudioDuration());
+        binding.seekBar.setMax(AudioPlayer.getAudioDuration());
+        AudioPlayer.setOnCompletionListener(this::onCompletion);
+        startAudio();
     }
 
     @Override
@@ -134,15 +188,52 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 
     @Override
     public void onCompletion(MediaPlayer mp) {
-        binding.playerBtnPause.setVisibility(View.GONE);
-        binding.playerBtnPlay.setVisibility(View.VISIBLE);
-        binding.seekBar.setProgress(0);
-        AudioPlayer.seekTo(0);
+        Toast.makeText(this, "completed", Toast.LENGTH_SHORT).show();
+        pausedView();
+        restAudio();
+        if (!AudioPlayer.isLooping()) {
+            // Next audio index
+            startNextAudio();
+        }
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
+    private void startNextAudio(){
+        releaseAudio();
+        player = null;
+        currentAudioIndex++;
+            if (currentAudioIndex <= audioList.size() - 1) {
+                // Continue audio list if next audio exist
+                prepareAudio(audioList.get(currentAudioIndex));
+            } else {
+                // replay audio list if the next audio not exist
+                currentAudioIndex = 0;
+                prepareAudio(audioList.get(currentAudioIndex));
+            }
+        }
 
-    }
+        private void startPreviousAudio(){
+            releaseAudio();
+            player = null;
+            currentAudioIndex--;
+            if (currentAudioIndex > -1) {
+                // Continue audio list if next audio exist
+                prepareAudio(audioList.get(currentAudioIndex));
+            } else {
+                // replay audio list if the next audio not exist
+                currentAudioIndex = audioList.size()-1;
+                prepareAudio(audioList.get(currentAudioIndex));
+            }
+        }
+
+        private void restAudio(){
+            binding.seekBar.setProgress(0);
+            AudioPlayer.seekTo(0);
+            handler.removeCallbacks(runnable);
+        }
+
+    // -> Optional objective :
+    // The problem is if we have 3 audios in a playlist that the user is playing right now
+    // if we are playing the second audio and before the currentAudio finished the user deleted the next audio of this currentAudio
+    // then we shouldn't start the deleted audio
+
 }

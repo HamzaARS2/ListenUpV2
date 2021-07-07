@@ -25,7 +25,7 @@ public class FavoriteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
 
     public interface OnFavoriteClicklistener {
-        void onItemClick(Favorite favoriteAudio);
+        void onItemClick(int favoriteIndex, ArrayList<Favorite> favorites);
         void onPopupMenuClick(Favorite favoriteAudio,int position,View view);
     }
 
@@ -82,7 +82,7 @@ public class FavoriteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 public void onClick(View v) {
                     if (listener != null){
                         if (getAdapterPosition() != RecyclerView.NO_POSITION){
-                            listener.onItemClick(favoriteList.get(getAdapterPosition()));
+                            listener.onItemClick(getAdapterPosition(),(ArrayList<Favorite>) favoriteList);
                         }
                     }
                 }

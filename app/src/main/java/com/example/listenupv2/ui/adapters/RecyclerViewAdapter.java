@@ -18,11 +18,10 @@ import java.util.List;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
    private List<Audio> audioList = new ArrayList<>();
-   private List<Audio> receiverAudios = new ArrayList<>();
    public OnItemClickListener listener;
 
    public interface OnItemClickListener {
-      void onItemClick(Audio audio);
+      void onItemClick(int index);
       void onPopupMenuClick(Audio audio,int position,View view);
    }
 
@@ -56,7 +55,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
    public void setAudios(List<Audio> audios){
       this.audioList = audios;
+      notifyDataSetChanged();
+   }
 
+   public void removeItem(int position){
+      audioList.remove(position);
       notifyDataSetChanged();
    }
 
@@ -76,7 +79,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             public void onClick(View v) {
                if (listener != null){
                   if (getAdapterPosition() != RecyclerView.NO_POSITION){
-                     listener.onItemClick(audioList.get(getAdapterPosition()));
+                     listener.onItemClick(getAdapterPosition());
                   }
                }
             }

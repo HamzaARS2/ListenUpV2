@@ -12,18 +12,7 @@
         android:layout_height="match_parent"
         tools:context=".ui.PlayerActivity">
 
-        <Button
-            android:id="@+id/player_btn_pause"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:background="@drawable/ic_pause_24"
-            android:visibility="visible"
-            app:layout_constraintBottom_toTopOf="@+id/guideline9"
-            app:layout_constraintDimensionRatio="1:1"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/guideline10"
-            app:layout_constraintVertical_bias="0.0" />
+
 
         <ImageView
             android:id="@+id/activity_player_audio_img"
@@ -95,6 +84,19 @@
             android:text="05:09"
             app:layout_constraintEnd_toEndOf="@+id/seekBar"
             app:layout_constraintTop_toBottomOf="@+id/seekBar" />
+
+        <Button
+            android:id="@+id/player_btn_pause"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/ic_pause_24"
+            android:visibility="visible"
+            app:layout_constraintBottom_toTopOf="@+id/guideline9"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/guideline10"
+            app:layout_constraintVertical_bias="0.0" />
 
         <Button
             android:id="@+id/player_btn_play"
@@ -174,6 +176,18 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             app:layout_constraintGuide_percent="0.78" />
+
+        <CheckBox
+            android:id="@+id/loop_checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:text="Loop"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/guideline8"
+            app:layout_constraintStart_toStartOf="@+id/guideline7"
+            app:layout_constraintTop_toTopOf="@+id/guideline9" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -45,6 +45,14 @@ public class AudioPlayer {
         mp = null;
     }
 
+    public static void setLooping(boolean  bool){
+        mp.setLooping(bool);
+    }
+
+    public static boolean isLooping(){
+        return mp.isLooping();
+    }
+
     public static void setOnCompletionListener(MediaPlayer.OnCompletionListener listener){
         mp.setOnCompletionListener(listener);
     }

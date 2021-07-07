@@ -53,6 +53,12 @@ public class AudioRepository {
         });
     }
 
+    public void deleteAudioFromPlaylist(int audioId, int playlistId){
+        AudioDatabase.databaseExecutor.execute(() -> {
+            audioDao.deleteAudioFromPlaylist(audioId,playlistId);
+        });
+    }
+
     public void deleteAllAudios(){
         AudioDatabase.databaseExecutor.execute(() ->{
             audioDao.deleteAllAudios();
@@ -63,10 +69,6 @@ public class AudioRepository {
         AudioDatabase.databaseExecutor.execute(() -> {
             audioDao.insertAudioList(audioList);
         });
-    }
-
-    public LiveData<Audio> getAudio(String pTitle){
-        return audioDao.getAudio(pTitle);
     }
 
     public LiveData<List<Audio>> getAllAudios() {

@@ -20,23 +20,28 @@ import com.example.listenupv2.ui.AudioPlayer;
 import com.example.listenupv2.ui.PlayerActivity;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
+import java.io.Serializable;
+
 
 public class AudioControllerFragment extends Fragment implements View.OnClickListener {
 
     public static final String PLAYING_AUDIO_KEY = "audioInBackground";
+    public static final String PLAYING_AUDIO_SECOND_KEY = "isCurrentAudioPlaying";
     private TextView currentAudioTitle;
     private Button playBtn,pauseBtn;
     private Audio currentAudio;
+    private boolean isPlaying;
 
     public AudioControllerFragment() {
         // Required empty public constructor
     }
 
 
-    public static AudioControllerFragment newInstance( Audio audio){
+    public static AudioControllerFragment newInstance(Audio audio, boolean isPlaying){
         AudioControllerFragment fragment = new AudioControllerFragment();
         Bundle args = new Bundle();
         args.putSerializable(PLAYING_AUDIO_KEY,audio);
+        args.putBoolean(PLAYING_AUDIO_SECOND_KEY,isPlaying);
         fragment.setArguments(args);
         return fragment;
     }
@@ -45,6 +50,7 @@ public class AudioControllerFragment extends Fragment implements View.OnClickLis
         super.onCreate(savedInstanceState);
         if (getArguments() != null){
             currentAudio = (Audio) getArguments().getSerializable(PLAYING_AUDIO_KEY);
+            isPlaying = getArguments().getBoolean(PLAYING_AUDIO_SECOND_KEY);
         }
     }
 
@@ -64,12 +70,12 @@ public class AudioControllerFragment extends Fragment implements View.OnClickLis
         currentAudioTitle.setSelected(true);
         playBtn.setOnClickListener(this);
         pauseBtn.setOnClickListener(this);
+        setCurrentViewStatus();
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(), "terset", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(getContext(), PlayerActivity.class);
-                intent.putExtra(AudiosFragment.INTENT_AUDIO_CODE,currentAudio);
+                intent.putExtra(PlayerActivity.INTENT_AUDIO_INDEX_KEY, PlayerActivity.currentAudioIndex);
                 startActivity(intent);
             }
         });
@@ -80,15 +86,31 @@ public class AudioControllerFragment extends Fragment implements View.OnClickLis
         switch (view.getId()){
             case R.id.control_play_btn:
                 AudioPlayer.play();
-                playBtn.setVisibility(View.GONE);
-                pauseBtn.setVisibility(View.VISIBLE);
+                playingViewStatus();
                 break;
             case R.id.control_pause_btn:
                 AudioPlayer.pause();
-                playBtn.setVisibility(View.VISIBLE);
-                pauseBtn.setVisibility(View.GONE);
+                pausedViewStatus();
                 break;
 
         }
+    }
+
+    public void setCurrentViewStatus(){
+        if (isPlaying){
+            playingViewStatus();
+        }else {
+            pausedViewStatus();
+        }
+    }
+
+    public void playingViewStatus(){
+        playBtn.setVisibility(View.GONE);
+        pauseBtn.setVisibility(View.VISIBLE);
+    }
+
+    public void pausedViewStatus(){
+        playBtn.setVisibility(View.VISIBLE);
+        pauseBtn.setVisibility(View.GONE);
     }
 }

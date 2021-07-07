@@ -47,8 +47,14 @@ public interface AudioDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insertAudioList(List<Audio> audioList);
 
-    @Query("SELECT * FROM audio_table WHERE title = :pTitle ")
-    LiveData<Audio> getAudio(String pTitle);
+
+
+    @Query("DELETE FROM PLAYLISTAUDIOCROSSREF WHERE audio_id = :audioId AND playlist_id = :playlistId")
+    void deleteAudioFromPlaylist(int audioId, int playlistId);
+
+
+
+
 
 
 
