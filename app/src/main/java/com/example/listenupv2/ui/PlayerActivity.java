@@ -1,11 +1,11 @@
 package com.example.listenupv2.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 
 import android.content.Intent;
 import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
@@ -16,10 +16,8 @@ import android.widget.Toast;
 import com.example.listenupv2.R;
 import com.example.listenupv2.databinding.ActivityPlayerBinding;
 import com.example.listenupv2.model.entities.Audio;
-import com.example.listenupv2.model.entities.Favorite;
-import com.example.listenupv2.ui.fragments.AudiosFragment;
+import com.example.listenupv2.service.AudioService;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +33,7 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
     private static AudioPlayer player;
     private Handler handler = new Handler();
     private Runnable runnable;
+    public AudioService audioService;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,11 +52,13 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
                 handler.postDelayed(this,1000);
             }
         };
+
         prepareAudio(currentAudio);
 
 
 
     }
+
 
     @Override
     protected void onResume() {
@@ -72,9 +73,50 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 
     }
 
+    private void startAudioService(){
+        Intent intent = new Intent(getBaseContext(),AudioService.class);
+        ContextCompat.startForegroundService(getBaseContext(),intent);
+    }
+
+    private void stopAudioService(){
+        Intent intent = new Intent(getBaseContext(),AudioService.class);
+        stopService(intent);
+    }
+
+    public void prepareAudio(Audio currentAudio){
+        if(player != null){
+            if (!currentAudio.getUri().equals(AudioPlayer.audio.getUri())) {
+                AudioPlayer.stopAudio();
+                handler.removeCallbacks(runnable);
+                player = null;
+            }else {
+                if (!AudioPlayer.isPlaying()){
+                    pausedView();
+                }
+                binding.activityPlayerAudioName.setText(currentAudio.getTitle());
+                binding.durationTv.setText(AudioPlayer.getConvertedAudioDuration());
+                binding.seekBar.setMax(AudioPlayer.getAudioDuration());
+                handler.postDelayed(runnable,0);
+                return;
+            }
+        }
+        setCurrentAudio(currentAudio);
+    }
+
+
+    private void setCurrentAudio(Audio audio){
+        player = new AudioPlayer(getBaseContext(), audio);
+        binding.activityPlayerAudioName.setText(audio.getTitle());
+        binding.durationTv.setText(AudioPlayer.getConvertedAudioDuration());
+        binding.seekBar.setMax(AudioPlayer.getAudioDuration());
+        AudioPlayer.setOnCompletionListener(this::onCompletion);
+        startAudio();
+    }
+
 
     public void startAudio(){
-        AudioPlayer.play();
+        //AudioPlayer.play();
+        startAudioService();
         handler.postDelayed(runnable, 0);
         playingView();
     }
@@ -86,7 +128,7 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     public void releaseAudio(){
-        AudioPlayer.stopAudio();
+        stopAudioService();
         handler.removeCallbacks(runnable);
         pausedView();
     }
@@ -138,34 +180,9 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
             currentAudio = audioList.get(currentAudioIndex);
     }
 
-    public void prepareAudio(Audio currentAudio){
-                if(player != null){
-                    if (!currentAudio.getUri().equals(AudioPlayer.audio.getUri())) {
-                        AudioPlayer.stopAudio();
-                        handler.removeCallbacks(runnable);
-                        player = null;
-                    }else {
-                        if (!AudioPlayer.isPlaying()){
-                            pausedView();
-                        }
-                        binding.activityPlayerAudioName.setText(currentAudio.getTitle());
-                        binding.durationTv.setText(AudioPlayer.getConvertedAudioDuration());
-                        binding.seekBar.setMax(AudioPlayer.getAudioDuration());
-                        handler.postDelayed(runnable,0);
-                        return;
-                    }
-                }
-                setCurrentAudio(currentAudio);
-    }
 
-    private void setCurrentAudio(Audio audio){
-        player = new AudioPlayer(getBaseContext(), audio);
-        binding.activityPlayerAudioName.setText(audio.getTitle());
-        binding.durationTv.setText(AudioPlayer.getConvertedAudioDuration());
-        binding.seekBar.setMax(AudioPlayer.getAudioDuration());
-        AudioPlayer.setOnCompletionListener(this::onCompletion);
-        startAudio();
-    }
+
+
 
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {

@@ -6,16 +6,11 @@ import androidx.appcompat.widget.SearchView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
-import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.Manifest;
-import android.app.Activity;
-import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.Environment;
-import android.os.FileObserver;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,7 +18,6 @@ import android.widget.Toast;
 
 import com.example.listenupv2.R;
 import com.example.listenupv2.databinding.ActivityMainBinding;
-import com.example.listenupv2.model.entities.Audio;
 import com.example.listenupv2.ui.adapters.ViewPagerAdapter;
 import com.example.listenupv2.ui.fragments.AudioControllerFragment;
 import com.google.android.material.tabs.TabLayoutMediator;
@@ -45,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+
+
 
 
     @Override
@@ -121,4 +117,6 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Please accept the permission to access all ListenUp features", Toast.LENGTH_LONG).show();
         }
     }
+
+
 }
