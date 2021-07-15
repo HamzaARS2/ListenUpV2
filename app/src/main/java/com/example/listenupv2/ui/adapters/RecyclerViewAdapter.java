@@ -63,6 +63,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
       notifyDataSetChanged();
    }
 
+   public ArrayList<Audio> getAudioList(){
+      return (ArrayList<Audio>) audioList;
+   }
+
     class Holder extends RecyclerView.ViewHolder{
       ImageView imageView;
       TextView title;

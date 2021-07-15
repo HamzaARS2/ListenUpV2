@@ -54,7 +54,7 @@ public class SavedPlaylistFragment extends BottomSheetDialogFragment implements 
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             Audio audio = (Audio) getArguments().getSerializable(SAVING_AUDIO_ARG);
-            crossRef = new PlaylistAudioCrossRef( audio.getAudio_id());
+            crossRef = new PlaylistAudioCrossRef(audio.getAudio_id());
         }
 
         audioViewModel = new ViewModelProvider(getActivity()).get(AudioViewModel.class);

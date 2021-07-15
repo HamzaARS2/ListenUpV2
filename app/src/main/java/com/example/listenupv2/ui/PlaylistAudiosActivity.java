@@ -22,6 +22,7 @@ import com.example.listenupv2.R;
 import com.example.listenupv2.model.entities.Audio;
 import com.example.listenupv2.model.entities.Favorite;
 import com.example.listenupv2.model.entities.relations.PlaylistWithAudios;
+import com.example.listenupv2.service.AudioSService;
 import com.example.listenupv2.ui.adapters.RecyclerViewAdapter;
 import com.example.listenupv2.ui.fragments.AudioControllerFragment;
 import com.example.listenupv2.ui.fragments.AudiosFragment;
@@ -67,14 +68,15 @@ public class PlaylistAudiosActivity extends AppCompatActivity implements Recycle
     }
 
     private void showRunningAudio(){
-//        if (AudioPlayer.mp != null){
-//            containerView.setVisibility(View.VISIBLE);
-//            AudioControllerFragment fragment = AudioControllerFragment.newInstance(AudioPlayer.audio,AudioPlayer.isPlaying());
-//            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-//            ft.setReorderingAllowed(true);
-//            ft.add(R.id.playlists_audios_container, fragment);
-//            ft.commit();
-//        }
+        if (AudioSService.mp != null){
+            containerView.setVisibility(View.VISIBLE);
+            AudioControllerFragment fragment = AudioControllerFragment.newInstance(AudioSService.audioIndex,AudioSService.mp.isPlaying());
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.setReorderingAllowed(true);
+            ft.add(R.id.playlists_audios_container, fragment);
+            ft.commit();
+        }else
+            containerView.setVisibility(View.GONE);
     }
 
     public void buildDataList(){
@@ -89,7 +91,7 @@ public class PlaylistAudiosActivity extends AppCompatActivity implements Recycle
     @SuppressLint("SetTextI18n")
     public void setPlaylistInfo(){
         playlistName.setText(playlist.getPlaylist().getPlaylist_name());
-        totalAudios.setText(playlist.getAudios().size()+" Audios");
+        totalAudios.setText(adapter.getItemCount()+" Audios");
     }
 
     @Override
@@ -109,11 +111,24 @@ public class PlaylistAudiosActivity extends AppCompatActivity implements Recycle
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                new ViewModelProvider(PlaylistAudiosActivity.this).get(AudioViewModel.class).deleteAudioFromPlaylist(audio.getAudio_id(),playlist.getPlaylist().getPlaylist_id());
-                adapter.removeItem(position);
+               deleteAudio(audio,position);
                 return false;
             }
         });
+    }
+
+    @SuppressLint("SetTextI18n")
+    private void deleteAudio(Audio audio, int position){
+        new ViewModelProvider(PlaylistAudiosActivity.this)
+                .get(AudioViewModel.class)
+                .deleteAudioFromPlaylist(audio.getAudio_id(),playlist.getPlaylist().getPlaylist_id());
+        adapter.removeItem(position);
+        if (adapter.getItemCount() == 0) {
+            new ViewModelProvider(PlaylistAudiosActivity.this)
+                    .get(PlaylistViewModel.class).delete(playlist.getPlaylist());
+            finish();
+        }
+        setPlaylistInfo();
     }
 }
 

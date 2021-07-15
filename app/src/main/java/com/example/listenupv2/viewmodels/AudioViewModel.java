@@ -1,21 +1,14 @@
 package com.example.listenupv2.viewmodels;
 
 import android.app.Application;
-import android.view.MenuItem;
-import android.widget.PopupMenu;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 
-import com.example.listenupv2.R;
 import com.example.listenupv2.model.entities.Audio;
 import com.example.listenupv2.model.entities.relations.PlaylistAudioCrossRef;
-import com.example.listenupv2.model.roomdb.AudioDatabase;
 import com.example.listenupv2.model.roomdb.repositories.AudioRepository;
-import com.example.listenupv2.ui.interfaces.AudioInteraction;
 
 import java.util.List;
 
@@ -23,7 +16,6 @@ public class AudioViewModel extends AndroidViewModel {
 
     private AudioRepository repository;
     private LiveData<List<Audio>> allAudios;
-    private AudioInteraction listener;
     //public MutableLiveData<List<Audio>> audios = new MutableLiveData<>();
 
     public AudioViewModel(@NonNull Application application) {
