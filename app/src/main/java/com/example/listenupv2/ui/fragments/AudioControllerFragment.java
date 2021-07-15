@@ -74,9 +74,7 @@ public class AudioControllerFragment extends Fragment implements View.OnClickLis
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getContext(), PlayerActivity.class);
-                intent.putExtra(PlayerActivity.INTENT_AUDIO_INDEX_KEY, PlayerActivity.currentAudioIndex);
-                startActivity(intent);
+
             }
         });
     }
@@ -85,11 +83,11 @@ public class AudioControllerFragment extends Fragment implements View.OnClickLis
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.control_play_btn:
-                AudioPlayer.play();
+                //AudioPlayer.play();
                 playingViewStatus();
                 break;
             case R.id.control_pause_btn:
-                AudioPlayer.pause();
+                //AudioPlayer.pause();
                 pausedViewStatus();
                 break;
 

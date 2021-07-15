@@ -1,39 +1,47 @@
 package com.example.listenupv2.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 
+import android.annotation.SuppressLint;
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.ServiceConnection;
+import android.content.SharedPreferences;
+import android.icu.text.RelativeDateTimeFormatter;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.view.View;
-import android.widget.CompoundButton;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
 import com.example.listenupv2.R;
 import com.example.listenupv2.databinding.ActivityPlayerBinding;
 import com.example.listenupv2.model.entities.Audio;
-import com.example.listenupv2.service.AudioService;
+import com.example.listenupv2.service.AudioSService;
+import com.example.listenupv2.ui.interfaces.AudioActions;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
-public class PlayerActivity extends AppCompatActivity implements View.OnClickListener, SeekBar.OnSeekBarChangeListener, MediaPlayer.OnCompletionListener {
+public class PlayerActivity extends AppCompatActivity implements View.OnClickListener, SeekBar.OnSeekBarChangeListener, ServiceConnection, MediaPlayer.OnCompletionListener, AudioSService.OnStartNewAudio {
 
     public static final String INTENT_AUDIO_CODE = "audioToPlay";
     public static final String INTENT_AUDIO_LIST_KEY = " listToBeQueued";
     public static final String INTENT_AUDIO_INDEX_KEY = " audioIndexToPlay";
+    public static final String SP_FILE_NAME = "lastAudioFile";
     private ActivityPlayerBinding binding;
-    private static Audio currentAudio;
-    private static List<Audio> audioList;
-    public static int currentAudioIndex;
-    private static AudioPlayer player;
-    private Handler handler = new Handler();
-    private Runnable runnable;
-    public AudioService audioService;
+    private final Handler handler = new Handler();
+    public Runnable runnable;
+    public int currentAudioIndex;
+    public Audio currentAudio;
+    private Audio mLastAudio;
+    public ArrayList<Audio> audioList;
+    public AudioSService audioSService;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,118 +53,103 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
         binding.seekBar.setOnSeekBarChangeListener(this);
         binding.activityPlayerAudioName.setSelected(true);
         getAudioList();
-        runnable = new Runnable() {
-            @Override
-            public void run() {
-                binding.seekBar.setProgress(AudioPlayer.getCurrentPosition());
-                handler.postDelayed(this,1000);
-            }
-        };
-
-        prepareAudio(currentAudio);
-
+        setLastAudio();
 
 
     }
-
 
     @Override
     protected void onResume() {
         super.onResume();
-        binding.loopCheckbox.setChecked(AudioPlayer.isLooping());
-        binding.loopCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                AudioPlayer.setLooping(isChecked);
-            }
-        });
-
-    }
-
-    private void startAudioService(){
-        Intent intent = new Intent(getBaseContext(),AudioService.class);
-        ContextCompat.startForegroundService(getBaseContext(),intent);
-    }
-
-    private void stopAudioService(){
-        Intent intent = new Intent(getBaseContext(),AudioService.class);
-        stopService(intent);
-    }
-
-    public void prepareAudio(Audio currentAudio){
-        if(player != null){
-            if (!currentAudio.getUri().equals(AudioPlayer.audio.getUri())) {
-                AudioPlayer.stopAudio();
-                handler.removeCallbacks(runnable);
-                player = null;
-            }else {
-                if (!AudioPlayer.isPlaying()){
-                    pausedView();
-                }
-                binding.activityPlayerAudioName.setText(currentAudio.getTitle());
-                binding.durationTv.setText(AudioPlayer.getConvertedAudioDuration());
-                binding.seekBar.setMax(AudioPlayer.getAudioDuration());
-                handler.postDelayed(runnable,0);
-                return;
-            }
-        }
-        setCurrentAudio(currentAudio);
-    }
-
-
-    private void setCurrentAudio(Audio audio){
-        player = new AudioPlayer(getBaseContext(), audio);
-        binding.activityPlayerAudioName.setText(audio.getTitle());
-        binding.durationTv.setText(AudioPlayer.getConvertedAudioDuration());
-        binding.seekBar.setMax(AudioPlayer.getAudioDuration());
-        AudioPlayer.setOnCompletionListener(this::onCompletion);
-        startAudio();
-    }
-
-
-    public void startAudio(){
-        //AudioPlayer.play();
         startAudioService();
-        handler.postDelayed(runnable, 0);
-        playingView();
     }
 
-    public void pauseAudio(){
-        AudioPlayer.pause();
-        handler.removeCallbacks(runnable);
-        pausedView();
+    @Override
+    protected void onPause() {
+        super.onPause();
+        saveLastAudio();
     }
 
-    public void releaseAudio(){
-        stopAudioService();
-        handler.removeCallbacks(runnable);
-        pausedView();
+    public void saveLastAudio(){
+        SharedPreferences sp = getSharedPreferences(SP_FILE_NAME,MODE_PRIVATE);
+        @SuppressLint("CommitPrefEdits") SharedPreferences.Editor editor = sp.edit();
+        editor.putString("title",AudioSService.audio.getTitle());
+        editor.putInt("duration",AudioSService.mp.getDuration());
+        editor.putBoolean("isPlaying",AudioSService.mp.isPlaying());
+        editor.commit();
+    }
+
+    public void setLastAudio(){
+        SharedPreferences sp = getSharedPreferences(SP_FILE_NAME,MODE_PRIVATE);
+        if (sp != null) {
+            String title = sp.getString("title", "Unknown");
+            int duration = sp.getInt("duration", 0);
+            boolean isPlaying = sp.getBoolean("isPlaying",false);
+            binding.activityPlayerAudioName.setText(title);
+            binding.durationTv.setText(convertTime(duration));
+            binding.seekBar.setMax(duration);
+            if (!isPlaying)
+            pausedView();
+            startSeekBarTask();
+        }
     }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.player_btn_play:
-                if (AudioPlayer.isPlaying()){
-                    AudioPlayer.stopAudio();
-                }else if (AudioPlayer.mp == null){
-                    setCurrentAudio(currentAudio);
-                }
-               startAudio();
+                audioSService.play();
+                playingView();
+                handler.postDelayed(runnable,0);
                 break;
             case R.id.player_btn_pause:
-                pauseAudio();
+                audioSService.pause();
+                pausedView();
+                handler.removeCallbacks(runnable);
                 break;
             case R.id.player_btn_skip_next:
-                restAudio();
-                startNextAudio();
+                audioSService.startNextAudio();
                 break;
             case R.id.player_btn_skip_previous:
-                restAudio();
-                startPreviousAudio();
+                audioSService.startPreviousAudio();
                 break;
         }
     }
+
+    private void getAudioList(){
+        int index = getIntent().getIntExtra(INTENT_AUDIO_INDEX_KEY,-1);
+        ArrayList<Audio> list = getIntent().getParcelableArrayListExtra(INTENT_AUDIO_LIST_KEY);
+        if (list != null)
+            audioList = list;
+        if (index != -1) {
+            currentAudioIndex = index;
+            currentAudio = audioList.get(currentAudioIndex);
+        }
+    }
+
+    private void startSeekBarTask(){
+        runnable = new Runnable() {
+            @Override
+            public void run() {
+                if (AudioSService.mp != null) {
+                    binding.seekBar.setProgress(AudioSService.mp.getCurrentPosition());
+                    handler.postDelayed(this, 1000);
+                }
+
+            }
+        };
+        handler.postDelayed(runnable,0);
+    }
+
+    private void startAudioService(){
+        Intent intent = new Intent(getBaseContext(),AudioSService.class);
+        intent.putExtra(AudioSService.CURRENT_AUDIO, currentAudioIndex);
+        intent.putParcelableArrayListExtra(INTENT_AUDIO_LIST_KEY,audioList);
+        startService(intent);
+        bindService(intent,this,BIND_AUTO_CREATE);
+    }
+
+
 
 
 
@@ -170,27 +163,13 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
         binding.playerBtnPause.setVisibility(View.GONE);
     }
 
-    private void getAudioList(){
-        int audioIndex = getIntent().getIntExtra(INTENT_AUDIO_INDEX_KEY,-1);
-        ArrayList<Audio> queueList= getIntent().getParcelableArrayListExtra(INTENT_AUDIO_LIST_KEY);
-        if (audioIndex != -1)
-            currentAudioIndex = audioIndex;
-        if (queueList != null)
-            audioList = getIntent().getParcelableArrayListExtra(INTENT_AUDIO_LIST_KEY);
-            currentAudio = audioList.get(currentAudioIndex);
-    }
-
-
-
-
 
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-        if (fromUser) {
-            AudioPlayer.seekTo(progress);
+        if (fromUser){
+            AudioSService.mp.seekTo(progress);
         }
-            binding.positionTimeTv.setText(AudioPlayer.convertTime(progress));
-
+        binding.positionTimeTv.setText(convertTime(progress));
     }
 
     @Override
@@ -203,50 +182,48 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 
     }
 
+
     @Override
-    public void onCompletion(MediaPlayer mp) {
-        Toast.makeText(this, "completed", Toast.LENGTH_SHORT).show();
-        pausedView();
-        restAudio();
-        if (!AudioPlayer.isLooping()) {
-            // Next audio index
-            startNextAudio();
-        }
+    public void onServiceConnected(ComponentName name, IBinder service) {
+        AudioSService.AudioBinder binder = (AudioSService.AudioBinder) service;
+        audioSService = binder.getAudioSService();
+        audioSService.setOnStartNewAudio(this);
+        audioSService.setOnCompletion(this);
+        //Toast.makeText(audioSService, ""+convertTime(audioSService.mp.getDuration()), Toast.LENGTH_SHORT).show();
+
     }
 
-    private void startNextAudio(){
-        releaseAudio();
-        player = null;
-        currentAudioIndex++;
-            if (currentAudioIndex <= audioList.size() - 1) {
-                // Continue audio list if next audio exist
-                prepareAudio(audioList.get(currentAudioIndex));
-            } else {
-                // replay audio list if the next audio not exist
-                currentAudioIndex = 0;
-                prepareAudio(audioList.get(currentAudioIndex));
-            }
-        }
+    @Override
+    public void onServiceDisconnected(ComponentName name) {
+        Toast.makeText(audioSService, "Disconnected", Toast.LENGTH_SHORT).show();
+        audioSService = null;
+    }
 
-        private void startPreviousAudio(){
-            releaseAudio();
-            player = null;
-            currentAudioIndex--;
-            if (currentAudioIndex > -1) {
-                // Continue audio list if next audio exist
-                prepareAudio(audioList.get(currentAudioIndex));
-            } else {
-                // replay audio list if the next audio not exist
-                currentAudioIndex = audioList.size()-1;
-                prepareAudio(audioList.get(currentAudioIndex));
-            }
-        }
 
-        private void restAudio(){
-            binding.seekBar.setProgress(0);
-            AudioPlayer.seekTo(0);
-            handler.removeCallbacks(runnable);
-        }
+
+
+    @SuppressLint("DefaultLocale")
+    public  String convertTime(int milliseconds) {
+        return String.format("%02d:%02d"
+                , TimeUnit.MILLISECONDS.toMinutes(milliseconds)
+                ,TimeUnit.MILLISECONDS.toSeconds(milliseconds) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(milliseconds)));
+    }
+
+
+
+    @Override
+    public void onCompletion(MediaPlayer mp) {
+        audioSService.startNextAudio();
+        Toast.makeText(audioSService, "completed", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onAudioPrepared(Audio audio,int duration) {
+        binding.seekBar.setMax(duration);
+        binding.durationTv.setText(convertTime(duration));
+        binding.activityPlayerAudioName.setText(audio.getTitle());
+        startSeekBarTask();
+    }
 
     // -> Optional objective :
     // The problem is if we have 3 audios in a playlist that the user is playing right now

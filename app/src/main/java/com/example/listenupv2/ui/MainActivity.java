@@ -50,16 +50,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private  void showBottomAudioIfRunning(){
-        if (AudioPlayer.mp != null) {
-            binding.controllerContainer.setVisibility(View.VISIBLE);
-            AudioControllerFragment fragment = AudioControllerFragment.newInstance(AudioPlayer.audio,AudioPlayer.isPlaying());
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.setReorderingAllowed(true);
-            ft.add(R.id.controller_container, fragment);
-            ft.commit();
-        }else {
-            binding.controllerContainer.setVisibility(View.GONE);
-        }
+//        if (AudioPlayer.mp != null) {
+//            binding.controllerContainer.setVisibility(View.VISIBLE);
+//            AudioControllerFragment fragment = AudioControllerFragment.newInstance(AudioPlayer.audio,AudioPlayer.isPlaying());
+//            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+//            ft.setReorderingAllowed(true);
+//            ft.add(R.id.controller_container, fragment);
+//            ft.commit();
+//        }else {
+//            binding.controllerContainer.setVisibility(View.GONE);
+//        }
     }
 
     private void buildViewPager(){

@@ -3,7 +3,7 @@
     package="com.example.listenupv2">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
         android:allowBackup="true"
@@ -14,9 +14,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ListenUpV2">
         <service
+            android:name=".service.AudioSService"
+            android:enabled="true"
+            android:exported="true"></service>
+        <service
             android:name=".service.AudioService"
             android:enabled="true"
-            android:exported="false"></service>
+            android:exported="false" />
 
         <activity android:name=".ui.PlaylistAudiosActivity" />
         <activity

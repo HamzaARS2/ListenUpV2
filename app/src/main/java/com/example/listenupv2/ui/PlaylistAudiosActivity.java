@@ -67,14 +67,14 @@ public class PlaylistAudiosActivity extends AppCompatActivity implements Recycle
     }
 
     private void showRunningAudio(){
-        if (AudioPlayer.mp != null){
-            containerView.setVisibility(View.VISIBLE);
-            AudioControllerFragment fragment = AudioControllerFragment.newInstance(AudioPlayer.audio,AudioPlayer.isPlaying());
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.setReorderingAllowed(true);
-            ft.add(R.id.playlists_audios_container, fragment);
-            ft.commit();
-        }
+//        if (AudioPlayer.mp != null){
+//            containerView.setVisibility(View.VISIBLE);
+//            AudioControllerFragment fragment = AudioControllerFragment.newInstance(AudioPlayer.audio,AudioPlayer.isPlaying());
+//            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+//            ft.setReorderingAllowed(true);
+//            ft.add(R.id.playlists_audios_container, fragment);
+//            ft.commit();
+//        }
     }
 
     public void buildDataList(){
