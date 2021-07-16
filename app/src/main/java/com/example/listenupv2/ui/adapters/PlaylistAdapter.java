@@ -32,7 +32,6 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.Playli
     }
     public interface OnSavedPlaylistClick<T> {
         void onItemClick(T playlist);
-
     }
 
     public void setOnItemClickListener(OnSavedPlaylistClick listener){

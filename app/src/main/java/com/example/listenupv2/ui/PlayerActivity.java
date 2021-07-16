@@ -20,13 +20,13 @@ import android.widget.Toast;
 import com.example.listenupv2.R;
 import com.example.listenupv2.databinding.ActivityPlayerBinding;
 import com.example.listenupv2.model.entities.Audio;
-import com.example.listenupv2.service.AudioSService;
+import com.example.listenupv2.service.AudioService;
 import com.example.listenupv2.ui.interfaces.OnAudioChangedInterface;
 
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
-public class PlayerActivity extends AppCompatActivity implements View.OnClickListener, SeekBar.OnSeekBarChangeListener, ServiceConnection, AudioSService.OnStartNewAudio, CompoundButton.OnCheckedChangeListener {
+public class PlayerActivity extends AppCompatActivity implements View.OnClickListener, SeekBar.OnSeekBarChangeListener, ServiceConnection, AudioService.OnStartNewAudio, CompoundButton.OnCheckedChangeListener {
 
     public static final String INTENT_AUDIO_CODE = "audioToPlay";
     public static final String INTENT_AUDIO_LIST_KEY = " listToBeQueued";
@@ -39,7 +39,7 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
     private static String title;
     private static int duration;
     public static ArrayList<Audio> audioList;
-    public AudioSService audioSService;
+    public AudioService audioSService;
     private static OnAudioChangedInterface mListener;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +61,7 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
     protected void onResume() {
         super.onResume();
         setLastAudio();
-        if (AudioSService.mp != null) {
+        if (AudioService.mp != null) {
 
         }
     }
@@ -73,19 +73,19 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     private void saveLastAudio(){
-        if (AudioSService.mp != null){
-            title = AudioSService.audio.getTitle();
-            duration = AudioSService.mp.getDuration();
+        if (AudioService.mp != null){
+            title = AudioService.audio.getTitle();
+            duration = AudioService.mp.getDuration();
         }
     }
 
     private void setLastAudio(){
-        if (AudioSService.mp != null){
-            if (AudioSService.audio.getTitle().equals(title)){
+        if (AudioService.mp != null){
+            if (AudioService.audio.getTitle().equals(title)){
                 binding.activityPlayerAudioName.setText(title);
                 binding.durationTv.setText(convertTime(duration));
                 binding.seekBar.setMax(duration);
-                if (!AudioSService.mp.isPlaying())
+                if (!AudioService.mp.isPlaying())
                     pausedView();
                 startSeekBarTask();
             }
@@ -98,12 +98,12 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.player_btn_play:
-                AudioSService.play();
+                AudioService.play();
                 playingView();
                 handler.postDelayed(runnable,0);
                 break;
             case R.id.player_btn_pause:
-                AudioSService.pause();
+                AudioService.pause();
                 pausedView();
                 handler.removeCallbacks(runnable);
                 break;
@@ -135,8 +135,8 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
         runnable = new Runnable() {
             @Override
             public void run() {
-                if (AudioSService.mp != null) {
-                    binding.seekBar.setProgress(AudioSService.mp.getCurrentPosition());
+                if (AudioService.mp != null) {
+                    binding.seekBar.setProgress(AudioService.mp.getCurrentPosition());
                     handler.postDelayed(this, 1000);
                 }
             }
@@ -145,8 +145,8 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     private void startAudioService(){
-        Intent intent = new Intent(getBaseContext(),AudioSService.class);
-        intent.putExtra(AudioSService.CURRENT_AUDIO, currentAudioIndex);
+        Intent intent = new Intent(getBaseContext(), AudioService.class);
+        intent.putExtra(AudioService.CURRENT_AUDIO, currentAudioIndex);
         intent.putParcelableArrayListExtra(INTENT_AUDIO_LIST_KEY,audioList);
         startService(intent);
         bindService(intent,this,BIND_AUTO_CREATE);
@@ -170,7 +170,7 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
         if (fromUser){
-            AudioSService.mp.seekTo(progress);
+            AudioService.mp.seekTo(progress);
         }
         binding.positionTimeTv.setText(convertTime(progress));
     }
@@ -188,7 +188,7 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
-        AudioSService.AudioBinder binder = (AudioSService.AudioBinder) service;
+        AudioService.AudioBinder binder = (AudioService.AudioBinder) service;
         audioSService = binder.getAudioSService();
         audioSService.setOnStartNewAudio(this);
         audioSService.setOnCompletion(new MediaPlayer.OnCompletionListener() {
@@ -199,7 +199,7 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
                 Toast.makeText(audioSService, "completed", Toast.LENGTH_SHORT).show();
             }
         });
-        binding.loopCheckbox.setChecked(AudioSService.mp.isLooping());
+        binding.loopCheckbox.setChecked(AudioService.mp.isLooping());
         binding.loopCheckbox.setOnCheckedChangeListener(this);
 
         //Toast.makeText(audioSService, ""+convertTime(audioSService.mp.getDuration()), Toast.LENGTH_SHORT).show();
@@ -242,7 +242,7 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        AudioSService.mp.setLooping(isChecked);
+        AudioService.mp.setLooping(isChecked);
     }
 
 

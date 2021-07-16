@@ -13,10 +13,14 @@ import com.example.listenupv2.model.roomdb.daos.PlaylistDao;
 
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 public class PlaylistRepository {
     private PlaylistDao playlistDao;
     private LiveData<List<Playlist>> allPlaylists;
+    private long lastInsertedRow ;
+
 
 
     public PlaylistRepository(Application application){
@@ -25,11 +29,19 @@ public class PlaylistRepository {
         this.allPlaylists = this.playlistDao.getAllPlaylists();
     }
 
+
+
     public long insert(Playlist playlist){
-     AudioDatabase.databaseExecutor.execute(() -> {
-         playlistDao.insert(playlist);
-     });
-     return 0;
+        Callable<Long> insertCallable = () -> playlistDao.insert(playlist);
+        long rowId = 0;
+
+        Future<Long> future = AudioDatabase.databaseExecutor.submit(insertCallable);
+        try {
+            rowId = future.get();
+        } catch (InterruptedException | ExecutionException e1) {
+            e1.printStackTrace();
+        }
+        return rowId;
     }
 
     public void update(Playlist playlist){

@@ -6,13 +6,10 @@ import androidx.appcompat.widget.SearchView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
-import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,8 +18,7 @@ import android.widget.Toast;
 
 import com.example.listenupv2.R;
 import com.example.listenupv2.databinding.ActivityMainBinding;
-import com.example.listenupv2.model.entities.Audio;
-import com.example.listenupv2.service.AudioSService;
+import com.example.listenupv2.service.AudioService;
 import com.example.listenupv2.ui.adapters.ViewPagerAdapter;
 import com.example.listenupv2.ui.fragments.AudioControllerFragment;
 import com.google.android.material.tabs.TabLayoutMediator;
@@ -53,9 +49,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void showBottomAudioIfRunning( ){
-        if (AudioSService.mp != null) {
+        if (AudioService.mp != null) {
             binding.controllerContainer.setVisibility(View.VISIBLE);
-            AudioControllerFragment fragment = AudioControllerFragment.newInstance(AudioSService.audioIndex,AudioSService.mp.isPlaying());
+            AudioControllerFragment fragment = AudioControllerFragment.newInstance(AudioService.audioIndex, AudioService.mp.isPlaying());
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.setReorderingAllowed(true);
             ft.add(R.id.controller_container, fragment);

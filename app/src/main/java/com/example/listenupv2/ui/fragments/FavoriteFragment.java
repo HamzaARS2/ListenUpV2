@@ -90,7 +90,12 @@ public class FavoriteFragment extends Fragment implements FavoriteAdapter.OnFavo
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        // Adding audios to top of the recycler view
+        layoutManager.setReverseLayout(true);
+        layoutManager.setStackFromEnd(true);
+
+        recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);
         adapter.setOnItemClickListener(this);

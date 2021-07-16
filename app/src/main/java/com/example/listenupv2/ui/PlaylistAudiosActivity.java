@@ -3,8 +3,6 @@ package com.example.listenupv2.ui;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,24 +14,18 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.PopupMenu;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.listenupv2.R;
 import com.example.listenupv2.model.entities.Audio;
-import com.example.listenupv2.model.entities.Favorite;
 import com.example.listenupv2.model.entities.relations.PlaylistWithAudios;
-import com.example.listenupv2.service.AudioSService;
+import com.example.listenupv2.service.AudioService;
 import com.example.listenupv2.ui.adapters.RecyclerViewAdapter;
 import com.example.listenupv2.ui.fragments.AudioControllerFragment;
-import com.example.listenupv2.ui.fragments.AudiosFragment;
 import com.example.listenupv2.ui.fragments.PlaylistFragment;
-import com.example.listenupv2.ui.fragments.SavedPlaylistFragment;
 import com.example.listenupv2.viewmodels.AudioViewModel;
 import com.example.listenupv2.viewmodels.PlaylistViewModel;
 
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
 
 public class PlaylistAudiosActivity extends AppCompatActivity implements RecyclerViewAdapter.OnItemClickListener {
 
@@ -68,9 +60,9 @@ public class PlaylistAudiosActivity extends AppCompatActivity implements Recycle
     }
 
     private void showRunningAudio(){
-        if (AudioSService.mp != null){
+        if (AudioService.mp != null){
             containerView.setVisibility(View.VISIBLE);
-            AudioControllerFragment fragment = AudioControllerFragment.newInstance(AudioSService.audioIndex,AudioSService.mp.isPlaying());
+            AudioControllerFragment fragment = AudioControllerFragment.newInstance(AudioService.audioIndex, AudioService.mp.isPlaying());
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.setReorderingAllowed(true);
             ft.add(R.id.playlists_audios_container, fragment);

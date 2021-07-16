@@ -14,6 +14,7 @@ import com.example.listenupv2.R;
 import com.example.listenupv2.model.entities.Audio;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -63,9 +64,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
       notifyDataSetChanged();
    }
 
-   public ArrayList<Audio> getAudioList(){
-      return (ArrayList<Audio>) audioList;
-   }
 
     class Holder extends RecyclerView.ViewHolder{
       ImageView imageView;

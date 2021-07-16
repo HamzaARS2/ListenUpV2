@@ -15,6 +15,7 @@ import com.example.listenupv2.R;
 import com.example.listenupv2.model.entities.Favorite;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class FavoriteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {

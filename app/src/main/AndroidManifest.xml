@@ -14,13 +14,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ListenUpV2">
         <service
-            android:name=".service.AudioSService"
-            android:enabled="true"
-            android:exported="true"></service>
-        <service
             android:name=".service.AudioService"
             android:enabled="true"
-            android:exported="false" />
+            android:exported="true"></service>
 
         <activity android:name=".ui.PlaylistAudiosActivity" />
         <activity

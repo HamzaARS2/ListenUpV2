@@ -1,7 +1,6 @@
 package com.example.listenupv2.ui.fragments;
 
 import android.content.Intent;
-import android.media.MediaPlayer;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -13,17 +12,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.listenupv2.R;
 import com.example.listenupv2.model.entities.Audio;
-import com.example.listenupv2.service.AudioSService;
-import com.example.listenupv2.ui.AudioPlayer;
+import com.example.listenupv2.service.AudioService;
 import com.example.listenupv2.ui.PlayerActivity;
 import com.example.listenupv2.ui.interfaces.OnAudioChangedInterface;
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
-
-import java.io.Serializable;
 
 
 public class AudioControllerFragment extends Fragment implements View.OnClickListener, OnAudioChangedInterface {
@@ -77,7 +71,7 @@ public class AudioControllerFragment extends Fragment implements View.OnClickLis
         currentAudioTitle = view.findViewById(R.id.control_audio_title);
         playBtn = view.findViewById(R.id.control_play_btn);
         pauseBtn = view.findViewById(R.id.control_pause_btn);
-        currentAudioTitle.setText(AudioSService.audio.getTitle());
+        currentAudioTitle.setText(AudioService.audio.getTitle());
         currentAudioTitle.setSelected(true);
         playBtn.setOnClickListener(this);
         pauseBtn.setOnClickListener(this);
@@ -96,11 +90,11 @@ public class AudioControllerFragment extends Fragment implements View.OnClickLis
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.control_play_btn:
-                AudioSService.play();
+                AudioService.play();
                 playingViewStatus();
                 break;
             case R.id.control_pause_btn:
-                AudioSService.pause();
+                AudioService.pause();
                 pausedViewStatus();
                 break;
 
@@ -128,6 +122,6 @@ public class AudioControllerFragment extends Fragment implements View.OnClickLis
 
     @Override
     public void onAudioChanged() {
-        currentAudioTitle.setText(AudioSService.audio.getTitle());
+        currentAudioTitle.setText(AudioService.audio.getTitle());
     }
 }

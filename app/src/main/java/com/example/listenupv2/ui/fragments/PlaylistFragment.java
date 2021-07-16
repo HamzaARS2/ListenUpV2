@@ -77,7 +77,9 @@ public class PlaylistFragment extends Fragment implements PlaylistAdapter.OnSave
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        recyclerView.setLayoutManager(new GridLayoutManager(getContext(),2));
+        GridLayoutManager layoutManager = new GridLayoutManager(getContext(),2);
+        layoutManager.setReverseLayout(true);
+        recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);
         adapter.setOnItemClickListener(this);

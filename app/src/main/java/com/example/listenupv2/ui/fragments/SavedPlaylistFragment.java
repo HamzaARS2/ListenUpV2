@@ -88,12 +88,14 @@ public class SavedPlaylistFragment extends BottomSheetDialogFragment implements 
         create_playlist = view.findViewById(R.id.create_playlist_layout);
         createPlaylistBtn = view.findViewById(R.id.create_playlist_btn);
         textInputLayout = view.findViewById(R.id.textinput_et);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(),RecyclerView.VERTICAL,true);
+        layoutManager.setStackFromEnd(true);
+        recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);
         adapter.setOnItemClickListener(this);
-        newPlaylistBtn.setOnClickListener(this::onClick);
-        createPlaylistBtn.setOnClickListener(this::onClick);
+        newPlaylistBtn.setOnClickListener(this);
+        createPlaylistBtn.setOnClickListener(this);
     }
 
     @Override
@@ -112,19 +114,16 @@ public class SavedPlaylistFragment extends BottomSheetDialogFragment implements 
                 create_playlist.setVisibility(View.VISIBLE);
                 break;
             case R.id.create_playlist_btn:
-                String playlistName = textInputLayout.getEditText().getText().toString();
-                         plViewModel.insert(new Playlist(playlistName, 1));
-         new Handler().postDelayed(new Runnable() {
-             @Override
-             public void run() {
-                 List<Playlist> playlists = plViewModel.getAllPlaylists().getValue();
-                 long lastInsertedId = playlists.get(playlists.size()-1).getPlaylist_id();
-                 crossRef.setPlaylist_id(lastInsertedId);
-                 audioViewModel.insertPlaylistAudioCrossRef(crossRef);
-             }
-         },500);
-         dismiss();
+                addNewPlaylistWithAudio();
                 break;
         }
+    }
+
+    private void addNewPlaylistWithAudio(){
+        String playlistName = textInputLayout.getEditText().getText().toString();
+        long insert = plViewModel.insert(new Playlist(playlistName, 1));
+        crossRef.setPlaylist_id(insert);
+        audioViewModel.insertPlaylistAudioCrossRef(crossRef);
+        dismiss();
     }
 }
