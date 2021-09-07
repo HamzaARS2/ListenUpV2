@@ -89,7 +89,7 @@
             android:id="@+id/player_btn_pause"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:background="@drawable/ic_pause_24"
+            android:background="@drawable/pause_icon"
             android:visibility="visible"
             app:layout_constraintBottom_toTopOf="@+id/guideline9"
             app:layout_constraintDimensionRatio="1:1"
@@ -102,7 +102,7 @@
             android:id="@+id/player_btn_play"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:background="@drawable/ic_play_arrow_24"
+            android:background="@drawable/play_icon"
             android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@+id/guideline9"
             app:layout_constraintDimensionRatio="1:1"
@@ -115,11 +115,11 @@
             android:id="@+id/player_btn_skip_previous"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:background="@drawable/ic_skip_previous_24"
+            android:background="@drawable/previous_icon"
             app:layout_constraintBottom_toTopOf="@+id/guideline9"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.19"
+            app:layout_constraintHorizontal_bias="0.28"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/guideline10" />
 
@@ -127,11 +127,11 @@
             android:id="@+id/player_btn_skip_next"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:background="@drawable/ic_skip_next_24"
+            android:background="@drawable/next_icon"
             app:layout_constraintBottom_toTopOf="@+id/guideline9"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.8"
+            app:layout_constraintHorizontal_bias="0.72"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/guideline10" />
 
@@ -175,18 +175,48 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.78" />
+            app:layout_constraintGuide_percent="0.80" />
 
-        <CheckBox
-            android:id="@+id/loop_checkbox"
+
+
+        <ImageButton
+            android:id="@+id/img_btn_shuffle"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@+id/guideline9"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toStartOf="@+id/player_btn_skip_previous"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/guideline7"
+            app:layout_constraintTop_toTopOf="@+id/guideline10"
+            android:background="@drawable/rounded_shuffle_icon" />
+
+        <ImageButton
+            android:id="@+id/img_btn_loop"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintBottom_toTopOf="@+id/guideline9"
+            app:layout_constraintEnd_toStartOf="@+id/guideline8"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toEndOf="@+id/player_btn_skip_next"
+            app:layout_constraintTop_toTopOf="@+id/guideline10"
+            app:layout_constraintVertical_bias="0.0"
+            android:background="@drawable/rounded_loop_icon"
+            />
+
+        <com.google.android.gms.ads.AdView
+            android:id="@+id/adView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:text="Loop"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/guideline8"
-            app:layout_constraintStart_toStartOf="@+id/guideline7"
-            app:layout_constraintTop_toTopOf="@+id/guideline9" />
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            app:adSize="BANNER"
+            app:adUnitId="ca-app-pub-3869825072549924/8342168767"
+            app:layout_constraintBottom_toTopOf="@+id/activity_player_audio_img"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -21,7 +21,7 @@
             android:layout_height="wrap_content">
 
             <ImageView
-                android:id="@+id/playlist_audio_img"
+                android:id="@+id/playlist_audio_icon"
                 android:layout_width="match_parent"
                 android:layout_height="160dp"
                 android:paddingTop="5dp"
@@ -29,8 +29,9 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
+                app:srcCompat="@drawable/audio_playlist_icon"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/audio_icon" />
+                 />
 
             <TextView
                 android:id="@+id/playlist_audio_title"
@@ -44,9 +45,9 @@
                 android:textColor="@color/black"
                 android:textDirection="ltr"
                 android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="@+id/playlist_audio_img"
-                app:layout_constraintStart_toStartOf="@+id/playlist_audio_img"
-                app:layout_constraintTop_toBottomOf="@+id/playlist_audio_img" />
+                app:layout_constraintEnd_toEndOf="@+id/playlist_audio_icon"
+                app:layout_constraintStart_toStartOf="@+id/playlist_audio_icon"
+                app:layout_constraintTop_toBottomOf="@+id/playlist_audio_icon" />
 
             <TextView
                 android:id="@+id/total_audios_tv"

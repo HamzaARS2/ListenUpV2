@@ -6,12 +6,28 @@
     android:layout_height="match_parent"
     tools:context=".ui.PlaylistAudiosActivity">
 
-    <include
-        android:id="@+id/include"
-        layout="@layout/audio_playlist_layout"
+
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/adView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        app:adSize="BANNER"
+        app:adUnitId="ca-app-pub-3869825072549924/2302184650"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <include
+        android:id="@+id/include"
+        layout="@layout/audio_playlist_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="210dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/adView" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/playlistAudiosRV"

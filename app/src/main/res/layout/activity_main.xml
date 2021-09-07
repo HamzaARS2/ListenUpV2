@@ -7,6 +7,8 @@
 
     </data>
 
+
+
     <LinearLayout
         android:id="@+id/containerF"
         android:layout_width="match_parent"
@@ -53,12 +55,31 @@
             android:id="@+id/viewpager2"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            android:visibility="visible"
+            />
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/controller_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             />
+
+        <Button
+            android:id="@+id/requestPermBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            android:text="Request Permission"/>
+        <TextView
+            android:id="@+id/permissionNeededTv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Please restart the app and accept the permission to access all ListenUp features or reinstall the app if it does not ask you for the permission"
+            android:textSize="20sp"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:visibility="gone"/>
 
     </LinearLayout>
 </layout>

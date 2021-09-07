@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.listenupv2">
+    package="com.reddevx.listenup">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
@@ -13,17 +13,34 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ListenUpV2">
-        <service
-            android:name=".service.AudioService"
-            android:enabled="true"
-            android:exported="true"></service>
 
-        <activity android:name=".ui.PlaylistAudiosActivity" />
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-3869825072549924~6410958231"/>
+
+        <receiver
+            android:name="com.reddevx.listenup.receivers.NotificationReceiver"
+            android:enabled="true"
+            android:exported="true" />
+
+        <service
+            android:name="com.reddevx.listenup.service.AudioService"
+            android:enabled="true"
+            android:exported="true"
+            android:foregroundServiceType="mediaPlayback"/>
+
         <activity
-            android:name=".ui.PlayerActivity"
-            android:screenOrientation="portrait" />
+            android:name="com.reddevx.listenup.ui.PlaylistAudiosActivity"
+            android:parentActivityName="com.reddevx.listenup.ui.MainActivity"
+            android:screenOrientation="portrait"/>
         <activity
-            android:name=".ui.MainActivity"
+            android:name="com.reddevx.listenup.ui.PlayerActivity"
+            android:screenOrientation="portrait"
+            android:parentActivityName="com.reddevx.listenup.ui.MainActivity"
+            android:launchMode="singleTop"
+           />
+        <activity
+            android:name="com.reddevx.listenup.ui.MainActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
